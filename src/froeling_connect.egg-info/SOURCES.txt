@@ -1,0 +1,15 @@
+LICENSE.txt
+README.md
+pyproject.toml
+setup.cfg
+src/froeling/__init__.py
+src/froeling/client.py
+src/froeling/endpoints.py
+src/froeling/exceptions.py
+src/froeling/objects.py
+src/froeling/session.py
+src/froeling_connect.egg-info/PKG-INFO
+src/froeling_connect.egg-info/SOURCES.txt
+src/froeling_connect.egg-info/dependency_links.txt
+src/froeling_connect.egg-info/requires.txt
+src/froeling_connect.egg-info/top_level.txt

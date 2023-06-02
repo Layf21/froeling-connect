@@ -1,0 +1,22 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "froeling-connect"
+version = "2023.0.1"
+description = "A python wrapper for the Fröling-Connect API"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE.txt"}
+keywords = ["froeling", "fröling", "fröling-connect", "fröling connect"]
+authors = [
+  {name = "Layf"},
+]
+
+dependencies = [
+  "aiohttp",
+]
