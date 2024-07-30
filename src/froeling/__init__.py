@@ -8,4 +8,4 @@ Github and documentation: https://https://github.com/Layf21/froeling-connect.py
 """
 
 from .client import Froeling
-from .objects import Facility, Component, Notification
+from .datamodels import Facility, Component, NotificationOverview

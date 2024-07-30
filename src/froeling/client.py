@@ -1,9 +1,7 @@
 """Provides the main API Class"""
+import logging
 
-from typing import List, Any
-import types
-
-from .objects import Facility, Component, Notification
+from . import datamodels
 from . import endpoints
 from .session import Session
 
@@ -11,53 +9,82 @@ from .session import Session
 class Froeling:
     """The Froeling class provides access to the Fröling API."""
 
-    facilities: dict[int, Facility] = {}
-    """A dictionary with Facility IDs as keys (Update/initiate with get_facilities())."""
-    notifications: list[Notification] = []
-    """A list of all notifications (Update/initiate with get_notifications())."""
+    # cached data (does not change often)
+    _userdata: datamodels.UserData
+    _facilities: dict[int, datamodels.Facility] = {}
+
 
     async def __aenter__(self):
+        if not self.session.token:
+            await self._login()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.session.close()
 
     def __init__(self, username: str = None, password: str = None, token: str = None, auto_reauth: bool = True,
-                 max_retries: int = 2, token_callback=None):
+                 token_callback=None, logger: logging.Logger = None):
         """Initialize a :class:`Froeling` instance.
         Either username and password or a token is required.
                 :param username: The email you use to log into your Fröling account.
-                :param password: Your Fröling password.
-                :param token: A valid token to not create a token each time the script is run.
+                :param password: Your Fröling password (not required when using token).
+                :param token: A valid token (not required when using username and password).
                 :param auto_reauth: Automatically fetches a new token if the current one expires (requires password and username).
                 :param max_retries: How often to retry a request if the request failed.
                 :param token_callback: A function that is called when the token gets renewed (useful for saving the token)."""
 
-        self.session = Session(username, password, max_retries, auto_reauth, token_callback)
-        if token:
-            self.session.set_token(token)
-        else:
-            assert username and password, "Set either token or username and password."
-        if auto_reauth:
-            assert username and password, "Set username and password to use auto_reauth."
-        self.username = username
-        self.password = password
+        self.session = Session(username, password, token, auto_reauth, token_callback)
+        self._logger = logger or logging.getLogger(__name__)
 
-        self.auto_reauth = auto_reauth
-        self.reauth_tries = 0
+    async def _login(self) -> datamodels.UserData:
+        data = await self.session.login()
+        self._userdata = datamodels.UserData.from_dict(data)
+        return self._userdata
 
-    async def login(self):
-        await self.session.login()
+    @property
+    def user_id(self):
+        return self.session.user_id
 
-    async def get_facilities(self) -> dict[int, Facility]:
+
+    async def _get_userdata(self) -> datamodels.UserData:
+        res = await self.session.request("get", endpoints.USER.format(self.session.user_id))
+        return datamodels.UserData.from_dict(res)
+    async def get_userdata(self):
+        """Gets userdata (cached)"""
+        if not self._userdata:
+            self._userdata = await self._get_userdata()
+        return self._userdata
+
+
+    async def _get_facilities(self) -> list[datamodels.Facility]:
         """Gets all facilities connected with the account and stores them in this.facilities."""
         res = await self.session.request("get", endpoints.FACILITY.format(self.session.user_id))
-        ids = [r['facilityId'] for r in res]
-        self.facilities = {i: Facility(i, self.session) for i in ids}
-        return self.facilities
+        return datamodels.Facility.from_list(res, self.session)
 
-    async def get_notifications(self):
-        """Gets all Notifications and stores them in this.notifications"""
+    async def get_facilities(self) -> list[datamodels.Facility]:
+        if not self._facilities:
+            facilities = await self._get_facilities()
+            self._facilities = { f.facilityId: f for f in facilities}
+        return list(self._facilities.values())
+
+    async def get_facility(self, facility_id) -> datamodels.Facility:
+        if facility_id not in self._facilities:
+            await self.get_facilities()
+        assert facility_id in self._facilities, f"Facility with id {facility_id} not found."
+        return self._facilities[facility_id]
+
+
+    async def get_notification_count(self) -> int:
+        """Gets unread notification count"""
+        return (await self.session.request("get", endpoints.NOTIFICATION_COUNT.format(self.session.user_id)))["unreadNotifications"]
+
+    async def get_notifications(self) -> list[datamodels.NotificationOverview]:
         res = await self.session.request("get", endpoints.NOTIFICATION_LIST.format(self.session.user_id))
-        self.notifications = [Notification(n, self.session) for n in res]
-        return self.notifications
+        return [datamodels.NotificationOverview(n, self.session) for n in res]
+
+    async def get_notification(self, notification_id: int) -> datamodels.NotificationDetails:
+        res = await self.session.request("get", endpoints.NOTIFICATION.format(self.session.user_id, notification_id))
+        return datamodels.NotificationDetails.from_dict(res)
+
+    def get_component(self, facility_id: int, component_id: str):
+        return datamodels.Component(facility_id, component_id, self.session)
