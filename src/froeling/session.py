@@ -18,12 +18,13 @@ class Session:
                  username: str=None, password: str=None, token: str=None,
                  auto_reauth: bool=True,
                  token_callback=None,
+                 lang: str = 'en',
                  logger: logging.Logger=None
                  ):
         assert token or (username and password), "Set either token or username and password."
         assert not (auto_reauth and not (username and password)), "Set username and password to use auto_reauth."
 
-        self.session = ClientSession(headers=headers)
+        self.session = ClientSession(headers=headers|{'Accept-Language': lang})
         self.username = username
         self.password = password
         self.auto_reauth = auto_reauth

@@ -23,7 +23,7 @@ class Froeling:
         await self.session.close()
 
     def __init__(self, username: str = None, password: str = None, token: str = None, auto_reauth: bool = True,
-                 token_callback=None, logger: logging.Logger = None):
+                 token_callback=None, language: str = 'en', logger: logging.Logger = None):
         """Initialize a :class:`Froeling` instance.
         Either username and password or a token is required.
                 :param username: The email you use to log into your Fröling account.
@@ -33,7 +33,7 @@ class Froeling:
                 :param max_retries: How often to retry a request if the request failed.
                 :param token_callback: A function that is called when the token gets renewed (useful for saving the token)."""
 
-        self.session = Session(username, password, token, auto_reauth, token_callback)
+        self.session = Session(username, password, token, auto_reauth, token_callback, language, logger)
         self._logger = logger or logging.getLogger(__name__)
 
     async def _login(self) -> datamodels.UserData:

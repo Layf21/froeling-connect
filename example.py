@@ -25,7 +25,7 @@ async def main():
     logging.basicConfig(level=logging.INFO)
 
     # When only using token, auto reauth is not available
-    async with Froeling(username, password, token=token, auto_reauth=True, token_callback=print_new_token) as client:
+    async with Froeling(username, password, token=token, auto_reauth=True, language='en', token_callback=print_new_token) as client:
 
         notification = (await client.get_notifications())[0]  # Fetch notifications
         await notification.info()  # Load more information about one of the notifications
