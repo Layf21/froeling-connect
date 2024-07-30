@@ -3,7 +3,7 @@ import logging
 from dotenv import load_dotenv
 import os
 
-from src.froeling import Froeling
+from froeling import Froeling
 
 load_dotenv()
 username = os.getenv("USER")
