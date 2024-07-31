@@ -52,7 +52,7 @@ class Facility:
 
     async def get_components(self) -> list[Component]:
         res = await self.session.request("get", endpoints.COMPONENT_LIST.format(self.session.user_id, self.facilityId))
-        return [Component(self.facilityId, i["componentId"], self.session) for i in res]
+        return [Component.from_overview_data(self.facilityId, self.session, i) for i in res]
 
     def get_component(self, component_id: str):
         return Component(self.facilityId, component_id, self.session)

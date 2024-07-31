@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: froeling-connect
-Version: 2023.0.1
+Version: 2024.1.2
 Summary: A python wrapper for the Fröling-Connect API
 Home-page: https://github.com/Layf21/froeling-connect
 Author: Layf
@@ -205,32 +205,41 @@ License:                                  Apache License
            See the License for the specific language governing permissions and
            limitations under the License.
         
-Project-URL: Bug Tracker, https://github.com/Layf21/froeling-connect/issues
 Keywords: froeling,fröling,fröling-connect,fröling connect
-Classifier: Programming Language :: Python :: 3
-Classifier: License :: OSI Approved :: Apache Software License
-Classifier: Operating System :: OS Independent
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
+Requires-Dist: aiohttp
 
 # froeling-connect
-## An inofficial and (for now) read only implementation for the froeling-connect web API
+An inofficial asynchronous implementation of the proprietary [fröling-connect](https://connect-web.froeling.com/) web API. 
 
-------------------
-**Disclaimer:**  
-You can not write values (e.g. set the Temperature of the boiler). You can only fetch data.  
-This library was only tested with the T4e Boiler, it may not work perfectly for other Machines.  
-------------------
 
->### I am not affiliated, associated, authorized, endorsed by, or in any way officially connected with Fröling Heizkessel- und Behälterbau Ges.m.b.H. <br>Their official website can be found at https://www.froeling.com.
-<br>
+## Disclaimer  
+>This library was only tested with the T4e Boiler, it may not work perfectly for other Machines.  
+>As this API is not public, there may be breaking changes on the backend.  
+>### I am not affiliated, associated, authorized, endorsed by, or in any way officially connected with Fröling Heizkessel- und Behälterbau Ges.m.b.H.
+>Their official website can be found at https://www.froeling.com.
+
+## Features
+* Read notifications
+* Get general information about facilities and components managed by the user
+* Get and set parameters (not tested for all parameters)
 
 ## Installation
 
-```py -m install froeling-connect```
+```py -m pip install froeling-connect```
+(May not be up to date, this is my first time using PyPI)
 
-------------------
+## Terminology
+
+|Name      | Description                                                               | Examples                  |
+|----------|---------------------------------------------------------------------------|---------------------------|
+|Facility  | The Heating-Installation. One User can manage multiple Facilities.        | Wood Chip Boiler T4e      |
+|Component | A facility consists of multiple Components.                               | Boiler, Heating circuit   |
+|Parameter | Components have multiple parameters. These are measurements and settings. | Boiler State, Water Temp. |
+
+
 ## Usage
 There is no documentation currently.  
-Example usage can be found [here](example.py)
+Example usage can be found [here](https://github.com/Layf21/froeling-connect/blob/master/example.py)

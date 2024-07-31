@@ -16,7 +16,7 @@ class Session:
     token: str = None
     def __init__(self,
                  username: str=None, password: str=None, token: str=None,
-                 auto_reauth: bool=True,
+                 auto_reauth: bool=False,
                  token_callback=None,
                  lang: str = 'en',
                  logger: logging.Logger=None
@@ -35,6 +35,7 @@ class Session:
             self.set_token(token)
 
         self._logger = logger or logging.getLogger(__name__)
+        self._reauth_previous = False # Did the previous request result in renewing the token?
 
     async def close(self):
         await self.session.close()
@@ -72,19 +73,23 @@ class Session:
         :param url:
         :param kwargs:
         """
-        self._logger.info(f'Sent %s: %s', method.upper(), url)
+        self._logger.debug(f'Sent %s: %s', method.upper(), url)
         try:
             async with await self.session.request(method, url, **kwargs) as res:
                 if 299 >= res.status >= 200:
                     r = await res.text()
-                    self._logger.info('Got %s', r)
+                    self._logger.debug('Got %s', r)
+                    self._reauth_previous = False
                     return await res.json()
 
                 if res.status == 401:
                     if self.auto_reauth:
+                        if self._reauth_previous:
+                            raise exceptions.AuthenticationError("Reauth did not work.", await res.text())
                         self._logger.info('Error %s, renewing token...', await res.text())
                         await self.login()
                         self._logger.info('Reauthorized.')
+                        self._reauth_previous = True
                         return await self.request(method, url, **kwargs)
                     else:
                         self._logger.error("Request unauthorized")

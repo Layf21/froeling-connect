@@ -38,7 +38,7 @@ async def main():
         example_component = (await facility.get_components())[0]  # Get all components of the facility
         print(example_component)
 
-        await example_component.update()  # Get more information about the component
+        await example_component.update()  # Get more information about the component. This includes the parameters.
         print(f'{example_component.type} {example_component.sub_type}: {example_component.display_name} \n{"_" * 20}')
         for i in example_component.parameters:  # Loop over all data af the component
             print(i.display_name, ":", i.display_value)
@@ -48,6 +48,7 @@ async def main():
         example_component2 = facility.get_component("1_100")
         await example_component2.update()
         print("\n\nExample Component:", example_component2.display_name)
+
         for param in example_component2.parameters:
             if param.id == "7_28":
                 print(f"Setting {param.display_name} to 80")

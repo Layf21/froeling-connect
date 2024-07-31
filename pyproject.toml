@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "froeling-connect"
-version = "2024.1.1"
+version = "2024.1.2"
 description = "A python wrapper for the Fröling-Connect API"
 readme = "README.md"
 requires-python = ">=3.9"

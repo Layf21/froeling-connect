@@ -16,13 +16,13 @@ class Froeling:
 
     async def __aenter__(self):
         if not self.session.token:
-            await self._login()
+            await self.login()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.session.close()
 
-    def __init__(self, username: str = None, password: str = None, token: str = None, auto_reauth: bool = True,
+    def __init__(self, username: str = None, password: str = None, token: str = None, auto_reauth: bool = False,
                  token_callback=None, language: str = 'en', logger: logging.Logger = None):
         """Initialize a :class:`Froeling` instance.
         Either username and password or a token is required.
@@ -36,7 +36,7 @@ class Froeling:
         self.session = Session(username, password, token, auto_reauth, token_callback, language, logger)
         self._logger = logger or logging.getLogger(__name__)
 
-    async def _login(self) -> datamodels.UserData:
+    async def login(self) -> datamodels.UserData:
         data = await self.session.login()
         self._userdata = datamodels.UserData.from_dict(data)
         return self._userdata

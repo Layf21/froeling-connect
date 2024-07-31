@@ -23,18 +23,29 @@ class Component:
         self.component_id = component_id
         self.session = session
 
+    @classmethod
+    def from_overview_data(cls, facility_id: int, session: Session, obj: dict) -> 'Component':
+        component = cls(facility_id, obj.get("componentId"), session)
+        component.display_name = obj.get("displayName")
+        component.display_category = obj.get("displayCategory")
+        component.standard_name = obj.get("standardName")
+        component.type = obj.get("type")
+        component.sub_type = obj.get("subType")
+        return component
+
+
     def __str__(self):
         return f'Component([Facility {self.facility_id}] -> {self.component_id})'
 
     async def update(self) -> list['Parameter']:
         res = await self.session.request("get", endpoints.COMPONENT.format(self.session.user_id, self.facility_id, self.component_id))
-        self.component_id = res['componentId']
-        self.display_name = res['displayName']
-        self.display_category = res['displayCategory']
-        self.standard_name = res['standardName']
-        self.type = res['type']
-        self.sub_type = res['subType']
-        if res['timeWindowsView']:
+        self.component_id = res.get('componentId')
+        self.display_name = res.get('displayName')
+        self.display_category = res.get('displayCategory')
+        self.standard_name = res.get('standardName')
+        self.type = res.get('type')
+        self.sub_type = res.get('subType')
+        if res.get('timeWindowsView'):
             self.time_windows_view = TimeWindowDay.from_list(res['timeWindowsView'])
 
         #  TODO: Find endpoint that gives all parameters
@@ -79,7 +90,7 @@ class Parameter:
         _id = obj["id"]
         display_name = obj.get("displayName")
         name = obj.get("name")
-        editable = obj.get("editaböe")
+        editable = obj.get("editable")
         parameter_type =  obj.get("parameterType")
         unit = obj.get("unit")
         value =  obj.get("value")
