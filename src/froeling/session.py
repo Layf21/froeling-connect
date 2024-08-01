@@ -8,8 +8,8 @@ import logging
 from . import endpoints, exceptions
 
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36', 'Referer': 'https://connect-web.froeling.com/'}
-
+#headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36', 'Referer': 'https://connect-web.froeling.com/'}
+# Seems like user-agent and referer are not required
 
 class Session:
     user_id: int = None
@@ -19,12 +19,14 @@ class Session:
                  auto_reauth: bool=False,
                  token_callback=None,
                  lang: str = 'en',
-                 logger: logging.Logger=None
+                 logger: logging.Logger=None,
+                 clientsession: ClientSession=None
                  ):
         assert token or (username and password), "Set either token or username and password."
         assert not (auto_reauth and not (username and password)), "Set username and password to use auto_reauth."
 
-        self.session = ClientSession(headers=headers|{'Accept-Language': lang})
+        self.clientsession = clientsession or ClientSession()
+        self._headers = {'Accept-Language': lang }
         self.username = username
         self.password = password
         self.auto_reauth = auto_reauth
@@ -38,12 +40,12 @@ class Session:
         self._reauth_previous = False # Did the previous request result in renewing the token?
 
     async def close(self):
-        await self.session.close()
+        await self.clientsession.close()
 
     def set_token(self, token: str):
         """Sets the token used in Authorization and updates/sets user-id
         :param token The bearer token"""
-        self.session.headers['Authorization'] = token
+        self._headers['Authorization'] = token
         try:
             self.user_id = json.loads(base64.b64decode(token.split('.')[1] + "==").decode("utf-8"))['userId']
         except:
@@ -58,24 +60,29 @@ class Session:
         """Gets a token using username and password
         :return: Json sent by server (includes userdata)"""
         data = {'osType': 'web', 'username': self.username, 'password': self.password}
-        async with await self.session.post(endpoints.LOGIN, json=data) as res:
+        async with await self.clientsession.post(endpoints.LOGIN, json=data) as res:
             if res.status != 200:
                 raise exceptions.AuthenticationError(f'Server returned {res.status}: "{await res.text()}"')
             self.set_token(res.headers['Authorization'])
             userdata = await res.json()
-        self._logger.info("Logged in with username and password.")
+        self._logger.debug("Logged in with username and password.")
         return userdata
 
-    async def request(self, method, url, **kwargs):
+    async def request(self, method, url, headers=None, **kwargs):
         """
 
         :param method:
         :param url:
+        :param headers: Additional headers used in the request
         :param kwargs:
         """
         self._logger.debug(f'Sent %s: %s', method.upper(), url)
+        request_headers = self._headers
+        if headers:
+            request_headers |= headers
+
         try:
-            async with await self.session.request(method, url, **kwargs) as res:
+            async with await self.clientsession.request(method, url, headers=request_headers, **kwargs) as res:
                 if 299 >= res.status >= 200:
                     r = await res.text()
                     self._logger.debug('Got %s', r)

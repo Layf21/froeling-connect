@@ -87,7 +87,7 @@ class Parameter:
 
     @classmethod
     def from_dict(cls, obj, session: Session, facility_id: int):
-        _id = obj["id"]
+        parameter_id = obj["id"]
         display_name = obj.get("displayName")
         name = obj.get("name")
         editable = obj.get("editable")
@@ -98,7 +98,7 @@ class Parameter:
         max_val = obj.get("maxVal")
         string_list_key_values = obj.get("stringListKeyValues")
 
-        return cls(session, facility_id, _id, display_name, name, editable, parameter_type, unit, value, min_val, max_val, string_list_key_values)
+        return cls(session, facility_id, parameter_id, display_name, name, editable, parameter_type, unit, value, min_val, max_val, string_list_key_values)
 
     @classmethod
     def from_list(cls, obj, session: Session, facility_id: int):
@@ -116,9 +116,9 @@ class Parameter:
         """Returns None if value is the same"""
         try:
             return await self.session.request('put',
-                                          endpoints.SET_PARAMETER.format(self.session.user_id, self.facility_id, self.id),
-                                          json={"value": str(value)}
-                                          )
+                                              endpoints.SET_PARAMETER.format(self.session.user_id, self.facility_id, self.id),
+                                              json={"value": str(value)}
+                                              )
         except NetworkError as e:
-            if e.status == 304:
+            if e.status == 304: # unchanged
                 return None

@@ -1,5 +1,6 @@
 """Provides the main API Class"""
 import logging
+from aiohttp import ClientSession
 
 from . import datamodels
 from . import endpoints
@@ -23,7 +24,7 @@ class Froeling:
         await self.session.close()
 
     def __init__(self, username: str = None, password: str = None, token: str = None, auto_reauth: bool = False,
-                 token_callback=None, language: str = 'en', logger: logging.Logger = None):
+                 token_callback=None, language: str = 'en', logger: logging.Logger = None, clientsession: ClientSession = None):
         """Initialize a :class:`Froeling` instance.
         Either username and password or a token is required.
                 :param username: The email you use to log into your Fröling account.
@@ -31,9 +32,10 @@ class Froeling:
                 :param token: A valid token (not required when using username and password).
                 :param auto_reauth: Automatically fetches a new token if the current one expires (requires password and username).
                 :param max_retries: How often to retry a request if the request failed.
-                :param token_callback: A function that is called when the token gets renewed (useful for saving the token)."""
+                :param token_callback: A function that is called when the token gets renewed (useful for saving the token).
+                :param clientsession: When provided, network communication will go through this aiohttp session."""
 
-        self.session = Session(username, password, token, auto_reauth, token_callback, language, logger)
+        self.session = Session(username, password, token, auto_reauth, token_callback, language, logger, clientsession)
         self._logger = logger or logging.getLogger(__name__)
 
     async def login(self) -> datamodels.UserData:
@@ -41,10 +43,16 @@ class Froeling:
         self._userdata = datamodels.UserData.from_dict(data)
         return self._userdata
 
+    async def close(self):
+        await self.session.close()
+
     @property
     def user_id(self):
         return self.session.user_id
 
+    @property
+    def token(self):
+        return self.session.token
 
     async def _get_userdata(self) -> datamodels.UserData:
         res = await self.session.request("get", endpoints.USER.format(self.session.user_id))
@@ -64,7 +72,7 @@ class Froeling:
     async def get_facilities(self) -> list[datamodels.Facility]:
         if not self._facilities:
             facilities = await self._get_facilities()
-            self._facilities = { f.facilityId: f for f in facilities}
+            self._facilities = {f.facility_id: f for f in facilities}
         return list(self._facilities.values())
 
     async def get_facility(self, facility_id) -> datamodels.Facility:

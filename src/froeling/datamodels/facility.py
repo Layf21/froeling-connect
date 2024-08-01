@@ -8,7 +8,7 @@ from .component import Component, Parameter
 @dataclass(frozen=True)
 class Facility:
     session: Session
-    facilityId: int
+    facility_id: int
     equipmentNumber: int
     status: str
     name: str
@@ -26,7 +26,7 @@ class Facility:
 
     @staticmethod
     def from_dict(obj: dict, session: Session) -> 'Facility':
-        facilityId = obj.get("facilityId")
+        facility_id = obj.get("facilityId")
         equipmentNumber = obj.get("equipmentNumber")
         status = obj.get("status")
         name = obj.get("name")
@@ -43,7 +43,7 @@ class Facility:
 
 
         facilityGeneration = obj.get("facilityGeneration")
-        return Facility(session, facilityId, equipmentNumber, status, name, address, owner, role, favorite, allowMessages,
+        return Facility(session, facility_id, equipmentNumber, status, name, address, owner, role, favorite, allowMessages,
                         subscribedNotifications, pictureUrl, protocol3200Info, hoursSinceLastMaintenance, operationHours, facilityGeneration)
 
     @staticmethod
@@ -51,9 +51,9 @@ class Facility:
         return [Facility.from_dict(i, session) for i in obj]
 
     async def get_components(self) -> list[Component]:
-        res = await self.session.request("get", endpoints.COMPONENT_LIST.format(self.session.user_id, self.facilityId))
-        return [Component.from_overview_data(self.facilityId, self.session, i) for i in res]
+        res = await self.session.request("get", endpoints.COMPONENT_LIST.format(self.session.user_id, self.facility_id))
+        return [Component.from_overview_data(self.facility_id, self.session, i) for i in res]
 
     def get_component(self, component_id: str):
-        return Component(self.facilityId, component_id, self.session)
+        return Component(self.facility_id, component_id, self.session)
 
