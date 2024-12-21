@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "setuptools>=42",
-    "wheel"
+    "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -11,12 +11,37 @@ version = "2024.1.2"
 description = "A python wrapper for the Fröling-Connect API"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {file = "LICENSE.txt"}
+license = {text = "Apache-2.0"}
 keywords = ["froeling", "fröling", "fröling-connect", "fröling connect"]
 authors = [
   {name = "Layf"},
 ]
-
 dependencies = [
-  "aiohttp",
+  "aiohttp>=3",
 ]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/Layf21/froeling-connect"
+Documentation = "https://github.com/Layf21/froeling-connect/blob/master/README.md"
+Repository = "https://github.com/Layf21/froeling-connect.git"
+"Bug Tracker" = "https://github.com/Layf21/froeling-connect/issues"
+Changelog = "https://github.com/Layf21/froeling-connect/blob/master/CHANGELOG.md"
+
