@@ -45,3 +45,21 @@ Repository = "https://github.com/Layf21/froeling-connect.git"
 "Bug Tracker" = "https://github.com/Layf21/froeling-connect/issues"
 Changelog = "https://github.com/Layf21/froeling-connect/blob/master/CHANGELOG.md"
 
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle
+    "F",  # Pyflakes
+    "UP",  # pyupgrade
+    "B",  # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "I",  # isort
+]
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
+lines-after-imports = 2
