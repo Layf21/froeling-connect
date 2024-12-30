@@ -6,7 +6,7 @@ import os
 from froeling import Froeling
 
 load_dotenv()
-username = os.getenv("USER")
+username = os.getenv("USERNAME")
 password = os.getenv("PASSWORD")
 token = os.getenv("TOKEN")
 
