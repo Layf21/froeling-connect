@@ -27,9 +27,9 @@ async def main():
     # When only using token, auto reauth is not available
     async with Froeling(username, password, token=token, auto_reauth=True, language='en', token_callback=print_new_token) as client:
 
-        notification = (await client.get_notifications())[0]  # Fetch notifications
-        await notification.info()  # Load more information about one of the notifications
-        print(f'\n[Notification {notification.id}] Subject: {notification.subject}\n{notification.details.body}\n\n')
+        for notification in await client.get_notifications():  # Fetch notifications
+            await notification.info()  # Load more information about one of the notifications
+            print(f'\n[Notification {notification.id}] Subject: {notification.subject}\n{notification.details.body}\n\n')
 
 
         facility = (await client.get_facilities())[0]  # Get a list of all facilities
