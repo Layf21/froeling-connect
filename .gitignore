@@ -1,4 +1,6 @@
-venv
-dist
-.idea
+**/*.egg-info
 .env
+.idea
+.venv
+dist
+venv

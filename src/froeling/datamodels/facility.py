@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 
-from ..session import Session
 from .. import endpoints
+from ..session import Session
+from .component import Component
 from .generics import Address
-from .component import Component, Parameter
+
 
 @dataclass(frozen=True)
 class Facility:
@@ -25,7 +26,7 @@ class Facility:
     facilityGeneration: str
 
     @staticmethod
-    def from_dict(obj: dict, session: Session) -> 'Facility':
+    def from_dict(obj: dict, session: Session) -> "Facility":
         facility_id = obj.get("facilityId")
         equipmentNumber = obj.get("equipmentNumber")
         status = obj.get("status")
@@ -41,10 +42,25 @@ class Facility:
         hoursSinceLastMaintenance = int(protocol3200Info.get("hoursSinceLastMaintenance"))
         operationHours = int(protocol3200Info.get("operationHours"))
 
-
         facilityGeneration = obj.get("facilityGeneration")
-        return Facility(session, facility_id, equipmentNumber, status, name, address, owner, role, favorite, allowMessages,
-                        subscribedNotifications, pictureUrl, protocol3200Info, hoursSinceLastMaintenance, operationHours, facilityGeneration)
+        return Facility(
+            session,
+            facility_id,
+            equipmentNumber,
+            status,
+            name,
+            address,
+            owner,
+            role,
+            favorite,
+            allowMessages,
+            subscribedNotifications,
+            pictureUrl,
+            protocol3200Info,
+            hoursSinceLastMaintenance,
+            operationHours,
+            facilityGeneration,
+        )
 
     @staticmethod
     def from_list(obj: list, session: Session):
@@ -56,4 +72,3 @@ class Facility:
 
     def get_component(self, component_id: str):
         return Component(self.facility_id, component_id, self.session)
-
