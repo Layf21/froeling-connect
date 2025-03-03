@@ -55,8 +55,8 @@ async def main():
                 # await param.set_value(80)
 
 
-        # If you know the facility_id and component_id, you can get the component like this.
-        client.get_component(facility.facility_id, "1_100")
+        # If you know the facilityId and component_id, you can get the component like this.
+        client.get_component(facility.facilityId, "1_100")
 
 
 asyncio.get_event_loop().run_until_complete(main())

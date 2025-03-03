@@ -1,3 +1,4 @@
+import typing
 from dataclasses import dataclass
 from .generics import Address
 
@@ -8,7 +9,7 @@ class UserData:
     salutation: str
     firstname: str
     surname: str
-    address: Address
+    address: typing.Optional['Address']
     user_id: int
     lang: str
     role: str
@@ -22,7 +23,10 @@ class UserData:
         salutation = obj['userData'].get("salutation")
         firstname = obj['userData'].get("firstname")
         surname = obj['userData'].get("surname")
-        address = Address.from_dict(obj['userData'].get("address"))
+        if obj['userData'].get("address"):
+            address = Address.from_dict(obj['userData'].get("address"))
+        else:
+            address = None
         user_id = obj['userData'].get("userId")
         lang = obj.get("lang")
         role = obj.get("role")
