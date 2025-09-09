@@ -1,10 +1,10 @@
 # froeling-connect
-An inofficial asynchronous implementation of the proprietary [fröling-connect](https://connect-web.froeling.com/) web API. 
+An inofficial asynchronous implementation of the proprietary [fröling-connect](https://connect-web.froeling.com/) web API.
 
 
-## Disclaimer  
->This library was only tested with the T4e Boiler, it may not work perfectly for other Machines.  
->As this API is not public, there may be breaking changes on the backend.  
+## Disclaimer
+>This library was only tested with the T4e Boiler, it may not work perfectly for other Machines.
+>As this API is not public, there may be breaking changes on the backend.
 >### I am not affiliated, associated, authorized, endorsed by, or in any way officially connected with Fröling Heizkessel- und Behälterbau Ges.m.b.H.
 >Their official website can be found at https://www.froeling.com.
 
@@ -16,7 +16,6 @@ An inofficial asynchronous implementation of the proprietary [fröling-connect](
 ## Installation
 
 ```py -m pip install froeling-connect```
-(May not be up to date, this is my first time using PyPI)
 
 ## Terminology
 
@@ -28,5 +27,5 @@ An inofficial asynchronous implementation of the proprietary [fröling-connect](
 
 
 ## Usage
-There is no documentation currently.  
+There is no documentation currently.
 Example usage can be found [here](https://github.com/Layf21/froeling-connect/blob/master/example.py)

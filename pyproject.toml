@@ -27,7 +27,6 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -44,5 +43,37 @@ source = "https://github.com/Layf21/froeling-connect.git"
 docs = "https://github.com/Layf21/froeling-connect/blob/master/README.md"
 issues = "https://github.com/Layf21/froeling-connect/issues"
 
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/froeling"]
+
+[tool.hatch.envs.dev]
+dependencies = [
+  "pre-commit",
+  "mypy",
+  "ruff",
+  "pytest",
+]
+
+
+[tool.ruff]
+lint.select = ["D", "E", "F", "N", "Q"]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+docstring-quotes = "double"
+avoid-escape = true
+
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_configs = true
+
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+ignore_missing_imports = true
+
+strict_optional = true
+warn_redundant_casts = true
+allow_untyped_globals = false
