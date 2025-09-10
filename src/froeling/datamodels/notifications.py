@@ -1,101 +1,130 @@
+"""Datamodels to represent Notifications and related objects."""
+
 from dataclasses import dataclass
 import datetime
 
 from .. import endpoints
+from ..session import Session
+
 
 class NotificationOverview:
     """Stores basic data of a notification."""
-    id: int
-    subject: str
-    unread: bool
-    date: datetime.date
-    error_id: int
-    type: str
+
+    id: int | None
+    subject: str | None
+    unread: bool | None
+    date: datetime.date | None
+    error_id: int | None
+    type: str | None
     """Known Values: "ERROR", "INFO", "WARNING", "ALARM" """
-    facility_id: int
-    facility_name: str
+    facility_id: int | None
+    facility_name: str | None
 
     details: 'NotificationDetails'
 
-    def __init__(self, data, session):
+    def __init__(self, data: dict, session: 'Session') -> None:
+        """Create a new NotificationOverview."""
         self.session = session
-        self.set_data(data)
+        self._set_data(data)
 
-    def set_data(self, data):
+    def _set_data(self, data: dict) -> None:
         self.data = data
 
         self.id = data.get('id')
         self.subject = data.get('subject')
         self.unread = data.get('unread')
-        self.date = datetime.datetime.fromisoformat(data.get('notificationDate'))
+        date_str = data.get('notificationDate')
+        if isinstance(date_str, str):
+            self.date = datetime.datetime.fromisoformat(date_str)
+        else:
+            self.date = None
         self.error_id = data.get('errorId')
         self.type = data.get('notificationType')
         self.facility_id = data.get('facilityId')
         self.facility_name = data.get('facilityName')
 
-    """Gets additional information about this notification."""
-    async def info(self):
-        res = await self.session.request("get", endpoints.NOTIFICATION.format(self.session.user_id, self.id))
-        self.details = NotificationDetails.from_dict(res)
+    async def info(self) -> 'NotificationDetails':
+        """Get additional information about this notification."""
+        res = await self.session.request(
+            'get', endpoints.NOTIFICATION.format(self.session.user_id, self.id)
+        )
+        self.details = NotificationDetails._from_dict(res)
         return self.details
 
 
 @dataclass
 class NotificationDetails(NotificationOverview):
-    """Stores all data of a notification"""
-    body: str
-    sms: bool
-    mail: bool
-    push: bool
-    notification_submission_state_dto: list['NotificationSubmissionState']
-    errorSolutions: list['NotificationErrorSolutions']
+    """Stores all data related to a notification."""
+
+    body: str | None
+    sms: bool | None
+    mail: bool | None
+    push: bool | None
+    notification_submission_state_dto: list['NotificationSubmissionState'] | None
+    error_solutions: list['NotificationErrorSolution'] | None
 
     @classmethod
-    def from_dict(cls, obj):
-        body = obj.get("body")
-        sms = obj.get("sms")
-        mail = obj.get("mail")
-        push = obj.get("push")
+    def _from_dict(cls, obj: dict) -> 'NotificationDetails':
+        body = obj.get('body')
+        sms = obj.get('sms')
+        mail = obj.get('mail')
+        push = obj.get('push')
         submission_state = None
-        if "notificationSubmissionStateDto" in obj:
-            submission_state = NotificationSubmissionState.from_list(obj["notificationSubmissionStateDto"])
+        if 'notificationSubmissionStateDto' in obj:
+            submission_state = NotificationSubmissionState._from_list(
+                obj['notificationSubmissionStateDto']
+            )
         error_solutions = None
-        if "errorSolutions" in obj:
-            error_solutions = NotificationErrorSolutions.from_list(obj["errorSolutions"])
-        notificationDetailsObject = cls(body, sms, mail, push, submission_state, error_solutions)
-        notificationDetailsObject.set_data(obj)
-        return notificationDetailsObject
+        if 'errorSolutions' in obj:
+            error_solutions = NotificationErrorSolution._from_list(
+                obj['errorSolutions']
+            )
+        notification_details_object = cls(
+            body, sms, mail, push, submission_state, error_solutions
+        )
+        notification_details_object._set_data(obj)
+        return notification_details_object
+
 
 @dataclass
 class NotificationSubmissionState:
-    id: int
-    recipient: str
-    type: str
-    submitted_to: str
-    submission_result: str
+    """Submission state of a notification."""
 
+    id: int | None
+    recipient: str | None
+    type: str | None
+    submitted_to: str | None
+    submission_result: str | None
 
     @classmethod
-    def from_dict(cls, obj: dict) -> 'NotificationSubmissionState':
-        _id = obj.get('id')
+    def _from_dict(cls, obj: dict) -> 'NotificationSubmissionState':
+        notification_id = obj.get('id')
         recipient = obj.get('recipient')
-        type = obj.get('type')
+        notification_type = obj.get('type')
         """Known values: "EMAIL", "TOKEN" """
         submitted_to = obj.get('submittedTo')
         submission_result = obj.get('submissionResult')
 
-        return NotificationSubmissionState(_id, recipient, type, submitted_to, submission_result)
+        return NotificationSubmissionState(
+            notification_id,
+            recipient,
+            notification_type,
+            submitted_to,
+            submission_result,
+        )
 
     @classmethod
-    def from_list(cls, obj: list[dict]):
-        return [cls.from_dict(i) for i in obj]
+    def _from_list(cls, obj: list[dict]) -> list['NotificationSubmissionState']:
+        return [cls._from_dict(i) for i in obj]
 
 
 @dataclass
-class NotificationErrorSolutions:
-    error_reason: str
-    error_solution: str
+class NotificationErrorSolution:
+    """Reasons for why the error might occur and steps to take to resolve it."""
+
+    error_reason: str | None
+    error_solution: str | None
 
     @classmethod
-    def from_list(cls, obj: list[dict]) -> list['NotificationErrorSolutions']:
+    def _from_list(cls, obj: list[dict]) -> list['NotificationErrorSolution']:
         return [cls(i['errorReason'], i['errorSolution']) for i in obj]
