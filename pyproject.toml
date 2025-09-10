@@ -57,11 +57,16 @@ dependencies = [
 
 
 [tool.ruff]
+include = ["src/**/*.py"]
 lint.select = ["D", "E", "F", "N", "Q"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
-multiline-quotes = "single"
+multiline-quotes = "double"
 docstring-quotes = "double"
 avoid-escape = true
 
