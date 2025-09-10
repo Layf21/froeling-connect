@@ -57,7 +57,7 @@ class Component:
     @classmethod
     def _from_overview_data(
         cls, facility_id: int, session: Session, obj: dict
-    ) -> 'Component' | None:
+    ) -> 'Component | None':
         """Create a new component and populate it with overview data."""
         component_id = obj.get('componentId')
         if not isinstance(component_id, str):

@@ -12,7 +12,7 @@ class UserData:
     salutation: str | None
     firstname: str | None
     surname: str | None
-    address: 'Address' | None
+    address: Address | None
     user_id: int
     lang: str | None
     role: str | None
@@ -28,7 +28,7 @@ class UserData:
         firstname: str | None = user_data.get('firstname')
         surname: str | None = user_data.get('surname')
 
-        address: 'Address' | None = (
+        address: Address | None = (
             Address._from_dict(user_data['address']) if 'address' in user_data else None
         )
 
