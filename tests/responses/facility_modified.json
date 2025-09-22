@@ -1,0 +1,58 @@
+[{
+    "facilityId": 12345,
+    "status": "OK",
+    "name": "Facility name",
+    "address": {
+        "street": "some street",
+        "zip": "ABCD",
+        "city": "somewhere",
+        "country": "DE"
+    },
+    "owner": "Jimmy Smith",
+    "role": "OWNER",
+    "favorite": false,
+    "allowMessages": true,
+    "subscribedNotifications": true,
+    "facilityGeneration": "GEN_500"
+}, {
+    "facilityId": 17,
+    "equipmentNumber": 100123321,
+    "status": "OK",
+    "name": "Another facility name",
+    "address": {},
+    "owner": "Slippy Jim",
+    "role": "OWNER",
+    "favorite": false,
+    "allowMessages": true,
+    "subscribedNotifications": true,
+    "pictureUrl": "https://connect-api.froeling.com/aks/connect/v1.0/resources/service/user/1234/facility/12345/picture",
+    "protocol3200Info": {
+        "hoursSinceLastMaintenance": "2000",
+        "operationHours": "200",
+        "active": false,
+        "productType": "AMG GT 63",
+        "status": "BAD"
+    },
+    "facilityGeneration": "GEN_3200"
+}, {
+    "facilityId": 0,
+    "equipmentNumber": -567,
+    "status": "NOTOK",
+    "name": "Another facility name",
+    "address": null,
+    "owner": "Slippy Jim",
+    "role": "OWNER",
+    "favorite": false,
+    "allowMessages": true,
+    "subscribedNotifications": true,
+    "pictureUrl": "https://connect-api.froeling.com/aks/connect/v1.0/resources/service/user/1234/facility/12345/picture",
+    "protocol6400Info": {
+        "hoursSinceLastMaintenance": "2000",
+        "operationHours": "200",
+        "active": false,
+        "productType": "AMG GT 63",
+        "status": "BAD",
+        "mood": "Annoyed"
+    },
+    "facilityGeneration": "GEN_6400"
+}]

@@ -1,0 +1,23 @@
+[{
+    "id": 10123456,
+    "subject": "Subject 1",
+    "unread": false,
+    "notificationDate": "2025-01-02T12:34:56.789+00:00",
+    "errorId": null,
+    "notificationType": "INFO",
+    "facilityId": 12345,
+    "facilityName": "F1"
+}, {
+    "id": 20123456,
+    "subject": "Subject 2",
+    "unread": true,
+    "notificationDate": "2025-01-02T12:34:56.789+00:00",
+    "errorId": 0,
+    "notificationType": "ALARM"
+}, {
+    "id": 30123456,
+    "subject": "Subject 3",
+    "notificationDate": "2025-01-02T12:34:56.789+00:00",
+    "errorId": 404,
+    "notificationType": "ERROR"
+}]

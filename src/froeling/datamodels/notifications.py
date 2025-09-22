@@ -1,10 +1,13 @@
 """Datamodels to represent Notifications and related objects."""
 
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from .. import endpoints
-from ..session import Session
+if TYPE_CHECKING:
+    from froeling.session import Session
+
+from froeling import endpoints
 
 
 class NotificationOverview:
@@ -45,10 +48,8 @@ class NotificationOverview:
 
     async def info(self) -> 'NotificationDetails':
         """Get additional information about this notification."""
-        res = await self.session.request(
-            'get', endpoints.NOTIFICATION.format(self.session.user_id, self.id)
-        )
-        self.details = NotificationDetails._from_dict(res)
+        res = await self.session.request('get', endpoints.NOTIFICATION.format(self.session.user_id, self.id))
+        self.details = NotificationDetails._from_dict(res)  # noqa: SLF001
         return self.details
 
 
@@ -71,18 +72,12 @@ class NotificationDetails(NotificationOverview):
         push = obj.get('push')
         submission_state = None
         if 'notificationSubmissionStateDto' in obj:
-            submission_state = NotificationSubmissionState._from_list(
-                obj['notificationSubmissionStateDto']
-            )
+            submission_state = NotificationSubmissionState._from_list(obj['notificationSubmissionStateDto'])  # noqa: SLF001
         error_solutions = None
         if 'errorSolutions' in obj:
-            error_solutions = NotificationErrorSolution._from_list(
-                obj['errorSolutions']
-            )
-        notification_details_object = cls(
-            body, sms, mail, push, submission_state, error_solutions
-        )
-        notification_details_object._set_data(obj)
+            error_solutions = NotificationErrorSolution._from_list(obj['errorSolutions'])  # noqa: SLF001
+        notification_details_object = cls(body, sms, mail, push, submission_state, error_solutions)
+        notification_details_object._set_data(obj)  # noqa: SLF001
         return notification_details_object
 
 

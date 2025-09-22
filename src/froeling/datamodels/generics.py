@@ -1,7 +1,7 @@
 """Generic datamodels used in multiple places/endpoints."""
 
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
 
 
 @dataclass(frozen=True)
@@ -16,17 +16,17 @@ class Address:
 
     """
 
-    street: str
-    zip: int
-    city: str
-    country: str
+    street: str | None
+    zip: int | None
+    city: str | None
+    country: str | None
 
     @staticmethod
     def _from_dict(obj: dict) -> 'Address':
-        street: str = obj.get('street', '')
-        zipcode: int = obj.get('zip', -1)
-        city: str = obj.get('city', '')
-        country: str = obj.get('country', '')
+        street = obj.get('street')
+        zipcode = obj.get('zip')
+        city = obj.get('city')
+        country = obj.get('country')
         return Address(street, zipcode, city, country)
 
 
@@ -61,7 +61,7 @@ class TimeWindowDay:
     def _from_dict(cls, obj: dict) -> 'TimeWindowDay':
         _id = obj['id']
         weekday = Weekday(obj['weekDay'])
-        phases = TimeWindowPhase._from_list(obj['phases'])
+        phases = TimeWindowPhase._from_list(obj['phases'])  # noqa: SLF001
 
         return cls(_id, weekday, phases)
 
@@ -75,10 +75,10 @@ class TimeWindowPhase:
     """Represents a time phase within a single day.
 
     Attributes:
-        start_hour (int): Hour when the phase starts (0–23).
-        start_minute (int): Minute when the phase starts (0–59).
-        end_hour (int): Hour when the phase ends (0–23).
-        end_minute (int): Minute when the phase ends (0–59).
+        start_hour (int): Hour when the phase starts (0-23).
+        start_minute (int): Minute when the phase starts (0-59).
+        end_hour (int): Hour when the phase ends (0-23).
+        end_minute (int): Minute when the phase ends (0-59).
 
     """
 

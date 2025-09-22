@@ -6,24 +6,26 @@ Some features are not yet implemented, like remote ignition for example.
 Github and documentation: https://https://github.com/Layf21/froeling-connect.py
 """
 
-from .client import Froeling
-from .datamodels import (
-    Facility,
+from froeling.client import Froeling
+from froeling.datamodels import (
+    Address,
     Component,
+    Facility,
+    NotificationDetails,
+    NotificationOverview,
     Parameter,
     UserData,
-    NotificationOverview,
-    NotificationDetails,
-    Address,
 )
+from froeling.session import Session
 
 __all__ = [
     'Froeling',
-    'Facility',
+    'Session',
+    'Address',
     'Component',
+    'Facility',
+    'NotificationDetails',
+    'NotificationOverview',
     'Parameter',
     'UserData',
-    'NotificationOverview',
-    'NotificationDetails',
-    'Address',
 ]

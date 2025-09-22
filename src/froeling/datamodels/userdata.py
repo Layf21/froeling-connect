@@ -1,7 +1,8 @@
 """Datamodels related to the user account."""
 
 from dataclasses import dataclass
-from .generics import Address
+
+from froeling.datamodels.generics import Address
 
 
 @dataclass(frozen=True)
@@ -28,9 +29,7 @@ class UserData:
         firstname: str | None = user_data.get('firstname')
         surname: str | None = user_data.get('surname')
 
-        address: Address | None = (
-            Address._from_dict(user_data['address']) if 'address' in user_data else None
-        )
+        address: Address | None = Address._from_dict(user_data['address']) if 'address' in user_data else None  # noqa: SLF001
 
         user_id: int = user_data.get('userId', -1)
         lang: str | None = obj.get('lang')

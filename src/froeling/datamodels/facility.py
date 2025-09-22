@@ -2,10 +2,10 @@
 
 from dataclasses import dataclass
 
-from ..session import Session
-from .. import endpoints
-from .generics import Address
-from .component import Component
+from froeling import endpoints
+from froeling.datamodels.component import Component
+from froeling.datamodels.generics import Address
+from froeling.session import Session
 
 
 @dataclass(frozen=True)
@@ -32,14 +32,14 @@ class Facility:
     @staticmethod
     def _from_dict(obj: dict, session: Session) -> 'Facility':
         facility_id = obj.get('facilityId')
-        assert isinstance(facility_id, int), f'facilityid was not an int.\nobj:{obj}'
+        if not isinstance(facility_id, int):
+            msg = f'facilityid was not an int.\nobj:{obj}'
+            raise TypeError(msg)
         equipment_number = obj.get('equipmentNumber')
         status = obj.get('status')
         name = obj.get('name')
         address_data = obj.get('address')
-        address = (
-            Address._from_dict(address_data) if isinstance(address_data, dict) else None
-        )
+        address = Address._from_dict(address_data) if isinstance(address_data, dict) else None  # noqa: SLF001
         owner = obj.get('owner')
         role = obj.get('role')
         favorite = obj.get('favorite')
@@ -53,14 +53,14 @@ class Facility:
         operation_hours: int | None = None
         if isinstance(protocol_3200_info, dict):
             hslm = protocol_3200_info.get('hoursSinceLastMaintenance')
-            if isinstance(hslm, (int, str)):
+            if isinstance(hslm, int | str):
                 try:
                     hours_since_last_maintenance = int(hslm)
                 except ValueError:
                     hours_since_last_maintenance = None
 
             op_hours = protocol_3200_info.get('operationHours')
-            if isinstance(op_hours, (int, str)):
+            if isinstance(op_hours, int | str):
                 try:
                     operation_hours = int(op_hours)
                 except ValueError:
@@ -96,10 +96,7 @@ class Facility:
             'get',
             endpoints.COMPONENT_LIST.format(self.session.user_id, self.facility_id),
         )
-        return [
-            Component._from_overview_data(self.facility_id, self.session, i)
-            for i in res  # noqa: E501
-        ]
+        return [Component._from_overview_data(self.facility_id, self.session, i) for i in res]  # noqa: SLF001
 
     def get_component(self, component_id: str) -> Component:
         """Get a component given it's id.

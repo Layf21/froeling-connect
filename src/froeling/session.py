@@ -1,13 +1,19 @@
 """Manages authentication, requests and error handling."""
 
-from typing import Callable, Any
+import base64
+import json
+import logging
+from collections.abc import Callable
+from http import HTTPStatus
+from typing import Any
+
 from aiohttp import ClientSession
 from aiohttp.typedefs import StrOrURL
-import json
-import base64
-import logging
 
-from . import endpoints, exceptions
+from froeling import endpoints, exceptions
+
+HTTP_STATUS_SUCCESS_MIN = 200
+HTTP_STATUS_SUCCESS_MAX = 299
 
 
 class Session:
@@ -32,6 +38,7 @@ class Session:
         username: str | None = None,
         password: str | None = None,
         token: str | None = None,
+        *,
         auto_reauth: bool = False,
         token_callback: Callable[[str], Any] | None = None,
         lang: str = 'en',
@@ -45,6 +52,7 @@ class Session:
         the session will attempt to automatically refresh expired tokens.
 
         Args:
+        ----
             username (str | None): Username for authentication.
             password (str | None): Password for authentication.
             token (str | None): Existing authentication token.
@@ -58,12 +66,12 @@ class Session:
                 client session to reuse instead of creating a new one.
 
         """
-        assert token or (username and password), (
-            'Set either token or username and password.'
-        )
-        assert not (auto_reauth and not (username and password)), (
-            'Set username and password to use auto_reauth.'
-        )
+        if not (token or (username and password)):
+            msg = 'Set either token or username and password.'
+            raise ValueError(msg)
+        if auto_reauth and not (username and password):
+            msg = 'Set username and password to use auto_reauth.'
+            raise ValueError(msg)
 
         self.clientsession = clientsession or ClientSession()
         self._headers = {'Accept-Language': lang}
@@ -76,9 +84,7 @@ class Session:
             self.set_token(token)
 
         self._logger = logger or logging.getLogger(__name__)
-        self._reauth_previous = (
-            False  # Did the previous request result in renewing the token?
-        )
+        self._reauth_previous = False  # Did the previous request result in renewing the token?
 
     async def close(self) -> None:
         """Close the session."""
@@ -91,18 +97,11 @@ class Session:
         """
         self._headers['Authorization'] = token
         try:
-            self.user_id = json.loads(
-                base64.b64decode(token.split('.')[1] + '==').decode('utf-8')
-            )['userId']
+            self.user_id = json.loads(base64.b64decode(token.split('.')[1] + '==').decode('utf-8'))['userId']
         except Exception as e:
-            raise ValueError('Token is in an invalid format.') from e
-        if (
-            self.token_callback and self.token
-        ):  # Only run when overwriting existing token
-            self.token = token
-            self.token_callback(token)
-        else:
-            self.token = token
+            msg = 'Token is in an invalid format.'
+            raise ValueError(msg) from e
+        self.token = token
 
     async def login(self) -> dict:
         """Get a token using username and password.
@@ -111,18 +110,18 @@ class Session:
         """
         data = {'osType': 'web', 'username': self.username, 'password': self.password}
         async with await self.clientsession.post(endpoints.LOGIN, json=data) as res:
-            if res.status != 200:
-                raise exceptions.AuthenticationError(
-                    f'Server returned {res.status}: "{await res.text()}"'
-                )
-            self.set_token(res.headers['Authorization'])
+            if not HTTP_STATUS_SUCCESS_MIN <= res.status <= HTTP_STATUS_SUCCESS_MAX:
+                msg = f'Server returned {res.status}: "{await res.text()}"'
+                raise exceptions.AuthenticationError(msg)
+            token = res.headers['Authorization']
+            if self.token_callback:
+                self.token_callback(token)
+            self.set_token(token)
             userdata = await res.json()
         self._logger.debug('Logged in with username and password.')
         return userdata
 
-    async def request(
-        self, method: str, url: StrOrURL, headers: dict | None = None, **kwargs: Any
-    ) -> Any:
+    async def request(self, method: str, url: StrOrURL, headers: dict | None = None, **kwargs: Any) -> Any:
         """Do a web request.
 
         :param method:
@@ -136,41 +135,36 @@ class Session:
             request_headers |= headers
 
         try:
-            async with await self.clientsession.request(
-                method, url, headers=request_headers, **kwargs
-            ) as res:
-                if 299 >= res.status >= 200:
+            async with await self.clientsession.request(method, url, headers=request_headers, **kwargs) as res:
+                if HTTP_STATUS_SUCCESS_MIN <= res.status <= HTTP_STATUS_SUCCESS_MAX:
                     r = await res.text()
                     self._logger.debug('Got %s', r)
                     self._reauth_previous = False
                     return await res.json()
 
-                if res.status == 401:
+                if res.status == HTTPStatus.UNAUTHORIZED:
                     if self.auto_reauth:
                         if self._reauth_previous:
-                            raise exceptions.AuthenticationError(
-                                'Reauth did not work.', await res.text()
-                            )
-                        self._logger.info(
-                            'Error %s, renewing token...', await res.text()
-                        )
+                            msg = 'Reauth did not work.'
+                            raise exceptions.AuthenticationError(msg, await res.text())
+                        self._logger.info('Error %s, renewing token...', await res.text())
                         await self.login()
                         self._logger.info('Reauthorized.')
                         self._reauth_previous = True
                         return await self.request(method, url, **kwargs)
-                    else:
-                        self._logger.error('Request unauthorized')
-                        raise exceptions.AuthenticationError(
-                            'Request not authorized: ', await res.text()
-                        )
-                else:
-                    error_data = await res.text()
-                    raise exceptions.NetworkError(
-                        'Unexpected return code',
-                        status=res.status,
-                        url=res.url,
-                        res=error_data,
-                    )
+
+                    self._logger.error('Request unauthorized')
+                    msg = 'Request not authorized: '
+                    raise exceptions.AuthenticationError(msg, await res.text())
+
+                error_data = await res.text()
+                msg = 'Unexpected return code'
+                raise exceptions.NetworkError(
+                    msg,
+                    status=res.status,
+                    url=res.url,
+                    res=error_data,
+                )
 
         except json.decoder.JSONDecodeError as e:
-            raise exceptions.ParsingError(e.msg, e.doc, e.pos, url)
+            raise exceptions.ParsingError(e.msg, e.doc, e.pos, url) from e

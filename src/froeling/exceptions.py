@@ -3,19 +3,18 @@
 from aiohttp.typedefs import StrOrURL
 
 
-class AuthenticationError(BaseException):
+class AuthenticationError(Exception):
     """Raised for unauthorized requests, failed reauths, or bad credentials."""
 
-    pass
 
-
-class NetworkError(BaseException):
+class NetworkError(Exception):
     """Raised on unsuccessful HTTP status codes."""
 
     def __init__(self, msg: str, status: int, url: StrOrURL, res: str) -> None:
         """Initialize a NetworkError.
 
         Args:
+        ----
             msg (str): Short description of the error.
             status (int): HTTP status code returned by the request.
             url (StrOrURL): The requested URL.
@@ -27,7 +26,7 @@ class NetworkError(BaseException):
         self.url = url
 
 
-class ParsingError(BaseException):
+class ParsingError(Exception):
     """Raised when parsing an API response fails.
 
     Attributes:
@@ -44,6 +43,7 @@ class ParsingError(BaseException):
         """Initialize a ParsingError.
 
         Args:
+        ----
             msg (str): Description of the parsing error.
             doc (str): The raw response text.
             pos (int): Character position in `doc` where the error occurred.
@@ -64,3 +64,12 @@ class ParsingError(BaseException):
         self.url = url
         self.lineno = lineno
         self.colno = colno
+
+
+class FacilityNotFoundError(Exception):
+    """Raised when a requested facility does not exist."""
+
+    def __init__(self, facility_id: int):
+        super().__init__(f'Could not find facility with id {facility_id}.')
+
+        self.facility_id = facility_id

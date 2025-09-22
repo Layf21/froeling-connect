@@ -1,12 +1,13 @@
 """Represents Components and their Parameters."""
 
-from typing import Any
 from dataclasses import dataclass
+from http import HTTPStatus
+from typing import Any
 
-from .. import endpoints
-from ..session import Session
-from ..exceptions import NetworkError
-from .generics import TimeWindowDay
+from froeling import endpoints
+from froeling.datamodels.generics import TimeWindowDay
+from froeling.exceptions import NetworkError
+from froeling.session import Session
 
 
 class Component:
@@ -46,7 +47,7 @@ class Component:
     time_windows_view: list[TimeWindowDay] | None
     picture_url: str | None
 
-    parameters: list['Parameter']
+    parameters: dict[str, 'Parameter']
 
     def __init__(self, facility_id: int, component_id: str, session: Session):
         """Initialize a Component with minimal identifying information."""
@@ -54,10 +55,12 @@ class Component:
         self.component_id = component_id
         self._session = session
 
+        self.time_windows_view = None
+        self.picture_url = None
+        self.parameters = {}
+
     @classmethod
-    def _from_overview_data(
-        cls, facility_id: int, session: Session, obj: dict
-    ) -> 'Component | None':
+    def _from_overview_data(cls, facility_id: int, session: Session, obj: dict) -> 'Component | None':
         """Create a new component and populate it with overview data."""
         component_id = obj.get('componentId')
         if not isinstance(component_id, str):
@@ -75,13 +78,11 @@ class Component:
         """Return a string representation of this component."""
         return f'Component([Facility {self.facility_id}] -> {self.component_id})'
 
-    async def update(self) -> list['Parameter']:
+    async def update(self) -> dict[str, 'Parameter']:
         """Update the Parameters of this component."""
         res = await self._session.request(
             'get',
-            endpoints.COMPONENT.format(
-                self._session.user_id, self.facility_id, self.component_id
-            ),
+            endpoints.COMPONENT.format(self._session.user_id, self.facility_id, self.component_id),
         )
         self.component_id = res.get('componentId')  # This should not be able to change.
         self.display_name = res.get('displayName')
@@ -90,12 +91,12 @@ class Component:
         self.type = res.get('type')
         self.sub_type = res.get('subType')
         if res.get('timeWindowsView'):
-            self.time_windows_view = TimeWindowDay._from_list(res['timeWindowsView'])
+            self.time_windows_view = TimeWindowDay._from_list(res['timeWindowsView'])  # noqa: SLF001
 
         #  TODO: Find endpoint that gives all parameters
         topview = res.get('topView')
 
-        parameters: dict[str, dict] = dict()
+        parameters: dict[str, dict] = {}
         if topview:
             self.picture_url = topview.get('pictureUrl')
             if 'pictureParams' in topview:
@@ -109,9 +110,7 @@ class Component:
         if 'setupView' in res:
             parameters |= {i['name']: i for i in res.get('setupView')}
 
-        self.parameters = Parameter._from_list(
-            list(parameters.values()), self._session, self.facility_id
-        )
+        self.parameters = Parameter._from_list(list(parameters.values()), self._session, self.facility_id)  # noqa: SLF001
         return self.parameters
 
 
@@ -122,7 +121,7 @@ class Parameter:
     session: Session
     facility_id: int
 
-    id: str | None
+    id: str
     display_name: str | None
     name: str | None
     editable: bool | None
@@ -162,11 +161,9 @@ class Parameter:
         )
 
     @classmethod
-    def _from_list(
-        cls, obj: list[dict], session: Session, facility_id: int
-    ) -> list['Parameter']:
+    def _from_list(cls, obj: list[dict], session: Session, facility_id: int) -> dict[str, 'Parameter']:
         """Turn a list of api response dicts into a list of parameter object."""
-        return [cls._from_dict(i, session, facility_id) for i in obj]
+        return {p.id: p for p in (cls._from_dict(i, session, facility_id) for i in obj)}
 
     @property
     def display_value(self) -> str:
@@ -187,12 +184,10 @@ class Parameter:
         try:
             return await self.session.request(
                 'put',
-                endpoints.SET_PARAMETER.format(
-                    self.session.user_id, self.facility_id, self.id
-                ),
+                endpoints.SET_PARAMETER.format(self.session.user_id, self.facility_id, self.id),
                 json={'value': str(value)},
             )
         except NetworkError as e:
-            if e.status == 304:  # unchanged
+            if e.status == HTTPStatus.NOT_MODIFIED:
                 return None
-            raise e
+            raise
