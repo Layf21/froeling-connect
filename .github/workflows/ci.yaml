@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ "dev", "main", "master" ]
+  pull_request:
+    branches: [ "dev", "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: |
+            3.10
+            3.11
+            3.12
+            3.13
+      - name: Pip cache
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: ${{ runner.os }}-pip-
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Run ruff fmt
+        run: hatch fmt --check
+      - name: Run mypy
+        run: hatch run dev:mypy src
+      - name: Run tests
+        run: hatch test -a
+      - name: Test build
+        run: hatch build
+
