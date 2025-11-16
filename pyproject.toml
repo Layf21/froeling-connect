@@ -1,10 +1,10 @@
 [project]
 name = "froeling-connect"
-version = "0.1.3"
+dynamic = ["version"]
 description = "A python wrapper for the Fröling-Connect API"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE.txt"}
+license = {text = "Apache-2.0"}
 keywords = ["froeling", "fröling", "fröling-connect", "fröling connect"]
 authors = [
   {name = "Layf"},
@@ -41,8 +41,11 @@ issues = "https://github.com/Layf21/froeling-connect/issues"
 
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
