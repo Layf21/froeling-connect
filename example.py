@@ -15,10 +15,8 @@ if not (username and password):
     password = input('Password         : ')
 
 
-def print_new_token(
-    token,
-):  # Gets executed when a new token was created (useful for storing the token for next time the program is run)
-    print('The new token ist:', token)
+def print_new_token(token):  # Gets executed when a new token was created (useful for storing the token for next time the program is run)
+    print(f'The new token is: {token}')
 
 
 async def main():
@@ -35,12 +33,8 @@ async def main():
         token_callback=print_new_token,
     ) as client:
         for notification in (await client.get_notifications())[:3]:  # Fetch notifications
-            await (
-                notification.info()
-            )  # Load more information about one of the notifications
-            print(
-                f'\n[Notification {notification.id}] Subject: {notification.subject}\n{notification.details.body}\n\n'
-            )
+            await notification.info()  # Load more information about one of the notifications
+            print(f'\n[Notification {notification.id}] Subject: {notification.subject}\n{notification.details.body}\n\n')
 
         facility = (await client.get_facilities())[0]  # Get a list of all facilities
         print(facility)
@@ -49,19 +43,15 @@ async def main():
         example_component = (await facility.get_components())[0]
         print(example_component)
 
-        await (
-            example_component.update()
-        )  # Get more information about the component. This includes the parameters.
+        await example_component.update()  # Get more information about the component. This includes the parameters.
         print(f'{example_component.type} {example_component.sub_type}: {example_component.display_name} \n{"_" * 20}')
-        for parameter in (
-            example_component.parameters.values()
-        ):  # Loop over all data af the component
+        for parameter in (example_component.parameters.values()):  # Loop over all parameters of the component
             print(parameter.display_name, ':', parameter.display_value)
 
         # You can directly reference a component of a facility by its id
         example_component2 = facility.get_component('1_100')
-        await example_component2.update()  # The update method is required to fully populete the component's data.
-        print('\n\nExample Component:', example_component2.display_name)
+        await example_component2.update()  # The update method is required to fully populate the component's data.
+        print(f'\n\nExample Component: {example_component2.display_name}')
 
         param = example_component2.parameters.get('7_28')
         if param:
