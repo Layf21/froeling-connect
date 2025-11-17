@@ -1,0 +1,30 @@
+{
+    "userData": {
+        "email": "user@example.com",
+        "salutation": "MR",
+        "firstname": "James",
+        "surname": "Doe",
+        "address": {
+            "street": "Sesame street",
+            "zip": "12345",
+            "city": "Somewhere",
+            "country": "DE"
+        },
+        "userId": 12345,
+        "createdOn": "2020-11-11T11:11:11.870Z"
+    },
+    "lang": "de",
+    "role": "USER",
+    "active": true,
+    "pictureUrl": "https://connect-api.froeling.com/aks/connect/v1.0/resources/service/user/12345/picture",
+    "viewConfig": {
+        "facilitiesListView": "grid",
+        "serviceFacilitiesListView": "list",
+        "componentStartView": "component",
+        "facilitiesDashboardDefaultMode": "all",
+        "serviceFacilitiesDashboardDefaultMode": "all"
+    },
+    "facilityCount": 2,
+    "permissions": [],
+    "temperatureUnit": "Celsius"
+}

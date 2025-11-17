@@ -1,0 +1,45 @@
+[{
+    "dtoType": "componentListing",
+    "displayName": "some display name",
+    "displayCategory": "Kessel",
+    "componentId": "1_100",
+    "standardName": "Kessel",
+    "componentNumber": 1,
+    "type": "BOILER",
+    "subType": "WOODCHIP"
+}, {
+    "dtoType": "componentListing",
+    "displayName": "Circuit 1",
+    "displayCategory": "Heizkreis",
+    "componentId": "300_3100",
+    "standardName": "Heizkreis 01",
+    "componentNumber": 1,
+    "type": "CIRCUIT",
+    "subType": "OUT_TEMP_CRTL"
+}, {
+    "dtoType": "componentListing",
+    "displayName": "Circuit 2",
+    "displayCategory": "Heizkreis",
+    "componentId": "300_3110",
+    "standardName": "Heizkreis 02",
+    "componentNumber": 2,
+    "type": "CIRCUIT",
+    "subType": "OUT_TEMP_CRTL"
+}, {
+    "dtoType": "componentListing",
+    "displayName": "Boiler 01",
+    "displayCategory": "Boiler",
+    "componentId": "200_2100",
+    "standardName": "Boiler 01",
+    "componentNumber": 1,
+    "type": "DHW"
+}, {
+    "dtoType": "componentListing",
+    "displayName": "Puffer 01",
+    "displayCategory": "Puffer",
+    "componentId": "400_4100",
+    "standardName": "Puffer 01",
+    "componentNumber": 1,
+    "type": "BUFFER_TANK",
+    "subType": "NEW_GENERATION"
+}]

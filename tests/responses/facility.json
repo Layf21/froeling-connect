@@ -1,0 +1,51 @@
+[{
+    "facilityId": 12345,
+    "equipmentNumber": 100321123,
+    "status": "OK",
+    "name": "Facility name",
+    "address": {
+        "street": "some street",
+        "zip": "3210",
+        "city": "somewhere",
+        "country": "DE"
+    },
+    "owner": "Jimmy Smith",
+    "role": "OWNER",
+    "favorite": false,
+    "allowMessages": true,
+    "subscribedNotifications": true,
+    "pictureUrl": "https://connect-api.froeling.com/aks/connect/v1.0/resources/service/user/1234/facility/12345/picture",
+    "protocol3200Info": {
+        "hoursSinceLastMaintenance": "1000",
+        "operationHours": "3000",
+        "active": false,
+        "productType": "T4e 230-250",
+        "status": "OK"
+    },
+    "facilityGeneration": "GEN_3200"
+}, {
+    "facilityId": 54321,
+    "equipmentNumber": 100123321,
+    "status": "OK",
+    "name": "Another facility name",
+    "address": {
+        "street": "some street",
+        "zip": "3210",
+        "city": "somewhere",
+        "country": "DE"
+    },
+    "owner": "Heisenberg",
+    "role": "OWNER",
+    "favorite": false,
+    "allowMessages": true,
+    "subscribedNotifications": true,
+    "pictureUrl": "https://connect-api.froeling.com/aks/connect/v1.0/resources/service/user/1234/facility/12345/picture",
+    "protocol3200Info": {
+        "hoursSinceLastMaintenance": "2000",
+        "operationHours": "200",
+        "active": false,
+        "productType": "S4 Turbo 60",
+        "status": "OK"
+    },
+    "facilityGeneration": "GEN_3200"
+}]

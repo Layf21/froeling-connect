@@ -1,0 +1,403 @@
+{
+    "outTemp": {
+        "displayName": "Outside air temperature",
+        "value": "20",
+        "unit": "°C"
+    },
+    "components": [{
+        "displayName": "Boiler",
+        "componentNumber": 1,
+        "componentId": "1_100",
+        "type": "BOILER",
+        "subType": "WOODCHIP",
+        "active": false,
+        "state": {
+            "displayName": "Kesselzustand",
+            "displayValue": "Standby",
+            "value": "19"
+        },
+        "mode2": {
+            "displayName": "Boiler status",
+            "displayValue": "Automatic",
+            "value": "2"
+        },
+        "boilerTemp": {
+            "displayName": "Boiler temperature",
+            "value": "76",
+            "unit": "°C"
+        },
+        "boilerOn": {
+            "displayName": "Boiler ON",
+            "displayValue": "Boiler ON",
+            "value": "0"
+        },
+        "ignitionWhenBufferTempBelow": {
+            "displayName": "Ignition when buffer temperature below",
+            "value": "60.0",
+            "unit": "°C"
+        },
+        "ignitionConfigured": {
+            "displayName": "Ignition configured",
+            "value": "0",
+            "unit": ""
+        }
+    }, {
+        "displayName": "Circuit 1 name",
+        "displayCategory": "Heating Circuit 01",
+        "componentNumber": 1,
+        "componentId": "300_3100",
+        "type": "CIRCUIT",
+        "subType": "OUT_TEMP_CRTL",
+        "active": false,
+        "heatingPhase": [{
+            "weekDay": "MONDAY",
+            "phases": [{
+                "startHour": 6,
+                "startMinute": 0,
+                "endHour": 20,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "TUESDAY",
+            "phases": [{
+                "startHour": 6,
+                "startMinute": 10,
+                "endHour": 20,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "WEDNESDAY",
+            "phases": [{
+                "startHour": 6,
+                "startMinute": 10,
+                "endHour": 20,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "THURSDAY",
+            "phases": [{
+                "startHour": 6,
+                "startMinute": 10,
+                "endHour": 20,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "FRIDAY",
+            "phases": [{
+                "startHour": 6,
+                "startMinute": 10,
+                "endHour": 19,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "SATURDAY",
+            "phases": [{
+                "startHour": 7,
+                "startMinute": 0,
+                "endHour": 16,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "SUNDAY",
+            "phases": [{
+                "startHour": 9,
+                "startMinute": 0,
+                "endHour": 16,
+                "endMinute": 0
+            }]
+        }],
+        "mode": {
+            "displayName": "Heating circuit mode",
+            "displayValue": "OFF",
+            "value": "0"
+        },
+        "desiredRoomTemp": {
+            "displayName": "Switch off heating circuit pump when outfeed setpoint is lower than",
+            "value": "20",
+            "unit": "°C"
+        },
+        "actualFlowTemp": {
+            "displayName": "Actual flow temperature",
+            "value": "39",
+            "unit": "°C"
+        },
+        "circuitPumpControl": {
+            "displayName": "Heating circuit pump",
+            "value": "0",
+            "unit": ""
+        }
+    }, {
+        "displayName": "Circuit 2 name",
+        "displayCategory": "Heating Circuit 02",
+        "componentNumber": 2,
+        "componentId": "300_3110",
+        "type": "CIRCUIT",
+        "subType": "OUT_TEMP_CRTL",
+        "active": false,
+        "heatingPhase": [{
+            "weekDay": "MONDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }, {
+            "weekDay": "TUESDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }, {
+            "weekDay": "WEDNESDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }, {
+            "weekDay": "THURSDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }, {
+            "weekDay": "FRIDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }, {
+            "weekDay": "SATURDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }, {
+            "weekDay": "SUNDAY",
+            "phases": [{
+                "startHour": 5,
+                "startMinute": 40,
+                "endHour": 21,
+                "endMinute": 40
+            }]
+        }],
+        "mode": {
+            "displayName": "Heating circuit mode",
+            "displayValue": "OFF",
+            "value": "0"
+        },
+        "desiredRoomTemp": {
+            "displayName": "Switch off heating circuit pump when outfeed setpoint is lower than",
+            "value": "20",
+            "unit": "°C"
+        },
+        "actualFlowTemp": {
+            "displayName": "Actual flow temperature",
+            "value": "35",
+            "unit": "°C"
+        },
+        "circuitPumpControl": {
+            "displayName": "Heating circuit pump",
+            "value": "0",
+            "unit": ""
+        }
+    }, {
+        "displayName": "DHW 1",
+        "componentNumber": 1,
+        "componentId": "200_2100",
+        "type": "DHW",
+        "active": false,
+        "heatingPhase": [{
+            "weekDay": "MONDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "TUESDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "WEDNESDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "THURSDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "FRIDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "SATURDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "SUNDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }],
+        "mode": {
+            "displayName": "DHW tank mode",
+            "displayValue": "Auto",
+            "value": "1"
+        },
+        "setDhwTemp": {
+            "displayName": "Set DHW temperature",
+            "value": "52",
+            "unit": "°C"
+        },
+        "dhwPumpControl": {
+            "displayName": "DHW tank pump control",
+            "value": "0",
+            "unit": "%"
+        },
+        "dhwTempTop": {
+            "displayName": "DHW tank top temperature",
+            "value": "74",
+            "unit": "°C"
+        }
+    }, {
+        "displayName": "Buffer tank 1",
+        "componentNumber": 1,
+        "componentId": "400_4100",
+        "type": "BUFFER_TANK",
+        "subType": "NEW_GENERATION",
+        "active": false,
+        "svgUrl": "https://connect-api.froeling.com/ctvps/v1.0/resources/service/componentTopViewPicture?...",
+        "heatingPhase": [{
+            "weekDay": "MONDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "TUESDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "WEDNESDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "THURSDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "FRIDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "SATURDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }, {
+            "weekDay": "SUNDAY",
+            "phases": [{
+                "startHour": 0,
+                "startMinute": 0,
+                "endHour": 24,
+                "endMinute": 0
+            }]
+        }],
+        "bufferTempTop": {
+            "displayName": "Buffer tank top temperature",
+            "value": "20",
+            "unit": "°C"
+        },
+        "bufferTempMiddleNewGeneration2": {
+            "displayName": "Storage tank temperature, sensor 2",
+            "value": "20",
+            "unit": "°C"
+        },
+        "bufferTempMiddleNewGeneration3": {
+            "displayName": "Storage tank temperature, sensor 3",
+            "value": "20",
+            "unit": "°C"
+        },
+        "bufferTempBottom": {
+            "displayName": "Buffer tank bottom temperature",
+            "value": "20",
+            "unit": "°C"
+        },
+        "bufferSensorAmount": {
+            "displayName": "Sensor for storage tank 1 with multi-sensor management",
+            "value": "4",
+            "unit": ""
+        },
+        "bufferTankChargeDiskret": {
+            "displayName": "Pufferladezustand Diskret",
+            "value": "4",
+            "unit": ""
+        },
+        "bufferTankCharge": {
+            "displayName": "Buffer tank charge",
+            "value": "97",
+            "unit": "%"
+        },
+        "bufferPumpControl": {
+            "displayName": "Buffer tank pump control",
+            "value": "0",
+            "unit": "%"
+        }
+    }]
+}
