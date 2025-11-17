@@ -1,59 +1,106 @@
+"""Dataclasses relating to Facilities."""
+
 from dataclasses import dataclass
 
-from ..session import Session
-from .. import endpoints
-from .generics import Address
-from .component import Component, Parameter
+from froeling import endpoints
+from froeling.datamodels.component import Component
+from froeling.datamodels.generics import Address
+from froeling.session import Session
+
 
 @dataclass(frozen=True)
 class Facility:
+    """Represents data related to a facility."""
+
     session: Session
     facility_id: int
-    equipmentNumber: int
-    status: str
-    name: str
-    address: Address
-    owner: str
-    role: str
-    favorite: bool
-    allowMessages: bool
-    subscribedNotifications: bool
-    pictureUrl: str
-    protocol3200Info: dict[str, str]
-    hoursSinceLastMaintenance: int
-    operationHours: int
-    facilityGeneration: str
+    equipment_number: int | None
+    status: str | None
+    name: str | None
+    address: Address | None
+    owner: str | None
+    role: str | None
+    favorite: bool | None
+    allow_messages: bool | None
+    subscribed_notifications: bool | None
+    picture_url: str | None
+    protocol_3200_info: dict[str, str] | None
+    hours_since_last_maintenance: int | None
+    operation_hours: int | None
+    facility_generation: str | None
 
     @staticmethod
-    def from_dict(obj: dict, session: Session) -> 'Facility':
-        facility_id = obj.get("facilityId")
-        equipmentNumber = obj.get("equipmentNumber")
-        status = obj.get("status")
-        name = obj.get("name")
-        address = Address.from_dict(obj.get("address"))
-        owner = obj.get("owner")
-        role = obj.get("role")
-        favorite = obj.get("favorite")
-        allowMessages = obj.get("allowMessages")
-        subscribedNotifications = obj.get("subscribedNotifications")
-        pictureUrl = obj.get("pictureUrl")
-        protocol3200Info = obj.get("protocol3200Info")
-        hoursSinceLastMaintenance = int(protocol3200Info.get("hoursSinceLastMaintenance"))
-        operationHours = int(protocol3200Info.get("operationHours"))
+    def _from_dict(obj: dict, session: Session) -> 'Facility':
+        facility_id = obj.get('facilityId')
+        if not isinstance(facility_id, int):
+            msg = f'facilityid was not an int.\nobj:{obj}'
+            raise TypeError(msg)
+        equipment_number = obj.get('equipmentNumber')
+        status = obj.get('status')
+        name = obj.get('name')
+        address_data = obj.get('address')
+        address = Address._from_dict(address_data) if isinstance(address_data, dict) else None  # noqa: SLF001
+        owner = obj.get('owner')
+        role = obj.get('role')
+        favorite = obj.get('favorite')
+        allow_messages = obj.get('allowMessages')
+        subscribed_notifications = obj.get('subscribedNotifications')
+        picture_url = obj.get('pictureUrl')
 
+        protocol_3200_info = obj.get('protocol3200Info')
 
-        facilityGeneration = obj.get("facilityGeneration")
-        return Facility(session, facility_id, equipmentNumber, status, name, address, owner, role, favorite, allowMessages,
-                        subscribedNotifications, pictureUrl, protocol3200Info, hoursSinceLastMaintenance, operationHours, facilityGeneration)
+        hours_since_last_maintenance: int | None = None
+        operation_hours: int | None = None
+        if isinstance(protocol_3200_info, dict):
+            hslm = protocol_3200_info.get('hoursSinceLastMaintenance')
+            if isinstance(hslm, int | str):
+                try:
+                    hours_since_last_maintenance = int(hslm)
+                except ValueError:
+                    hours_since_last_maintenance = None
+
+            op_hours = protocol_3200_info.get('operationHours')
+            if isinstance(op_hours, int | str):
+                try:
+                    operation_hours = int(op_hours)
+                except ValueError:
+                    operation_hours = None
+
+        facility_generation = obj.get('facilityGeneration')
+        return Facility(
+            session,
+            facility_id,
+            equipment_number,
+            status,
+            name,
+            address,
+            owner,
+            role,
+            favorite,
+            allow_messages,
+            subscribed_notifications,
+            picture_url,
+            protocol_3200_info,
+            hours_since_last_maintenance,
+            operation_hours,
+            facility_generation,
+        )
 
     @staticmethod
-    def from_list(obj: list, session: Session):
-        return [Facility.from_dict(i, session) for i in obj]
+    def _from_list(obj: list, session: Session) -> list['Facility']:
+        return [Facility._from_dict(i, session) for i in obj]
 
-    async def get_components(self) -> list[Component]:
-        res = await self.session.request("get", endpoints.COMPONENT_LIST.format(self.session.user_id, self.facility_id))
-        return [Component.from_overview_data(self.facility_id, self.session, i) for i in res]
+    async def get_components(self) -> list[Component | None]:
+        """Fetch all components of this facility (not cached)."""
+        res = await self.session.request(
+            'get',
+            endpoints.COMPONENT_LIST.format(self.session.user_id, self.facility_id),
+        )
+        return [Component._from_overview_data(self.facility_id, self.session, i) for i in res]  # noqa: SLF001
 
-    def get_component(self, component_id: str):
+    def get_component(self, component_id: str) -> Component:
+        """Get a component given it's id.
+
+        Data will not be initialized, call the Component.update method to fetch them.
+        """
         return Component(self.facility_id, component_id, self.session)
-

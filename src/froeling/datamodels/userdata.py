@@ -1,37 +1,52 @@
-import typing
+"""Datamodels related to the user account."""
+
 from dataclasses import dataclass
-from .generics import Address
+
+from froeling.datamodels.generics import Address
 
 
 @dataclass(frozen=True)
 class UserData:
-    email: str
-    salutation: str
-    firstname: str
-    surname: str
-    address: typing.Optional['Address']
+    """Data relating to the user account."""
+
+    email: str | None
+    salutation: str | None
+    firstname: str | None
+    surname: str | None
+    address: Address | None
     user_id: int
-    lang: str
-    role: str
-    active: bool
-    pictureUrl: str
-    facilityCount: int
+    lang: str | None
+    role: str | None
+    active: bool | None
+    picture_url: str | None
+    facility_count: int | None
 
     @staticmethod
-    def from_dict(obj: dict):
-        email = obj['userData'].get("email")
-        salutation = obj['userData'].get("salutation")
-        firstname = obj['userData'].get("firstname")
-        surname = obj['userData'].get("surname")
-        if obj['userData'].get("address"):
-            address = Address.from_dict(obj['userData'].get("address"))
-        else:
-            address = None
-        user_id = obj['userData'].get("userId")
-        lang = obj.get("lang")
-        role = obj.get("role")
-        active = obj.get("active")
-        pictureUrl = obj.get("pictureUrl")
-        facilityCount = obj.get("facilityCount")
-        return UserData(email, salutation, firstname, surname, address, user_id, lang, role, active, pictureUrl,
-                        facilityCount)
+    def _from_dict(obj: dict) -> 'UserData':
+        user_data = obj['userData']
+        email: str | None = user_data.get('email')
+        salutation: str | None = user_data.get('salutation')
+        firstname: str | None = user_data.get('firstname')
+        surname: str | None = user_data.get('surname')
+
+        address: Address | None = Address._from_dict(user_data['address']) if 'address' in user_data else None  # noqa: SLF001
+
+        user_id: int = user_data.get('userId', -1)
+        lang: str | None = obj.get('lang')
+        role: str | None = obj.get('role')
+        active: bool | None = obj.get('active')
+        picture_url: str | None = obj.get('pictureUrl')
+        facility_count: int | None = obj.get('facilityCount')
+        return UserData(
+            email,
+            salutation,
+            firstname,
+            surname,
+            address,
+            user_id,
+            lang,
+            role,
+            active,
+            picture_url,
+            facility_count,
+        )

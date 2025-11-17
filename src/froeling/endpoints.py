@@ -1,4 +1,4 @@
-"""API Endpoints"""
+"""List of static API Endpoints."""
 
 LOGIN = 'https://connect-api.froeling.com/connect/v1.0/resources/login'
 """post data: {"username": username, "password": password}"""

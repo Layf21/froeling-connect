@@ -1,0 +1,26 @@
+{
+    "id": 10123456,
+    "subject": "Subject 1",
+    "body": "Title\r\ntext",
+    "sms": false,
+    "mail": true,
+    "push": true,
+    "unread": false,
+    "notificationDate": "2025-01-02T12:34:56.789+00:00",
+    "notificationType": "INFO",
+    "facilityId": 12345,
+    "facilityName": "F1",
+    "notificationSubmissionStateDto": [{
+        "id": 12345678,
+        "recipient": "joe@example.com",
+        "type": "EMAIL",
+        "submittedTo": "joe@example.com",
+        "submissionResult": "SUCCESS"
+    }, {
+        "id": 12345679,
+        "recipient": "sometoken",
+        "type": "TOKEN",
+        "submittedTo": "joe@example.com",
+        "submissionResult": "SUCCESS"
+    }]
+}

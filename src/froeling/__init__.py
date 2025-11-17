@@ -1,11 +1,31 @@
-"""Fröling connect API Wrapper
+"""Fröling connect API Wrapper.
 
 This library is an unofficial API wrapper for the Fröling Web Portal (https://connect-web.froeling.com/).
-As for now, this wrapper is read only. Altering settings is not implemented yet. It supports reading statistics from
-your devices and reading notifications.
+Some features are not yet implemented, like remote ignition for example.
 
 Github and documentation: https://https://github.com/Layf21/froeling-connect.py
 """
 
-from .client import Froeling
-from .datamodels import Facility, Component, Parameter, UserData, NotificationOverview, NotificationDetails, Address
+from froeling.client import Froeling
+from froeling.datamodels import (
+    Address,
+    Component,
+    Facility,
+    NotificationDetails,
+    NotificationOverview,
+    Parameter,
+    UserData,
+)
+from froeling.session import Session
+
+__all__ = [
+    'Froeling',
+    'Session',
+    'Address',
+    'Component',
+    'Facility',
+    'NotificationDetails',
+    'NotificationOverview',
+    'Parameter',
+    'UserData',
+]

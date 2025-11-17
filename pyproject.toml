@@ -1,22 +1,102 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "froeling-connect"
-version = "2024.1.3"
+dynamic = ["version"]
 description = "A python wrapper for the Fröling-Connect API"
 readme = "README.md"
-requires-python = ">=3.9"
-license = {file = "LICENSE.txt"}
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
 keywords = ["froeling", "fröling", "fröling-connect", "fröling connect"]
 authors = [
   {name = "Layf"},
 ]
 
 dependencies = [
-  "aiohttp",
+  "aiohttp>=3",
 ]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+]
+
+[project.urls]
+homepage = "https://github.com/Layf21/froeling-connect"
+GitHub = "https://github.com/Layf21/froeling-connect"
+source = "https://github.com/Layf21/froeling-connect.git"
+docs = "https://github.com/Layf21/froeling-connect/blob/master/README.md"
+issues = "https://github.com/Layf21/froeling-connect/issues"
+
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/froeling"]
+
+
+[tool.hatch.envs.dev]
+dependencies = [
+  "python-dotenv",
+  "pre-commit",
+  "mypy",
+  "ruff",
+  "pytest",
+  "pytest-asyncio",
+  "aioresponses",
+  "coverage",
+]
+
+[tool.ruff]
+include = ["src/**/*.py"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_configs = true
+
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+ignore_missing_imports = true
+
+strict_optional = true
+warn_redundant_casts = true
+allow_untyped_globals = false
+
+
+[tool.hatch.envs.hatch-test]
+randomize = true
+extra-dependencies = [
+  "aioresponses",
+  "pytest-asyncio",
+]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.13", "3.12", "3.11", "3.10"]
