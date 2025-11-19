@@ -22,6 +22,8 @@ async def test_login_success(load_json):
 
         async with Froeling(username='joe', password='pwd') as api:
             userdata = await api.get_userdata()  # should be cached. No new requests
+            assert userdata.raw == login_data  # This includes the token.
+
             assert api.token == token
             assert api.user_id == 1234
 
@@ -80,6 +82,7 @@ async def test_request_auto_reauth(load_json):
             auto_reauth=True,
             token_callback=mock_token_callback,
         ) as api:
-            await api.get_userdata()
+            d = await api.get_userdata()
+            assert d.raw == user_data
 
         mock_token_callback.assert_called_once_with(new_token)

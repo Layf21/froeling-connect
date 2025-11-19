@@ -1,6 +1,6 @@
 """Represents Components and their Parameters."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from http import HTTPStatus
 from typing import Any
 
@@ -34,6 +34,7 @@ class Component:
         time_windows_view (list[TimeWindowDay] | None): Time window data, if fetched.
         picture_url (str | None): URL to a representative image of the component.
         parameters (list[Parameter]): List of associated parameters.
+        raw (dict)
 
     """
 
@@ -49,6 +50,8 @@ class Component:
 
     parameters: dict[str, 'Parameter']
 
+    raw: dict
+
     def __init__(self, facility_id: int, component_id: str, session: Session):
         """Initialize a Component with minimal identifying information."""
         self.facility_id = facility_id
@@ -58,6 +61,7 @@ class Component:
         self.time_windows_view = None
         self.picture_url = None
         self.parameters = {}
+        self.raw = {}
 
     @classmethod
     def _from_overview_data(cls, facility_id: int, session: Session, obj: dict) -> 'Component | None':
@@ -72,6 +76,7 @@ class Component:
         component.standard_name = obj.get('standardName')
         component.type = obj.get('type')
         component.sub_type = obj.get('subType')
+        component.raw = obj
         return component
 
     def __str__(self) -> str:
@@ -84,6 +89,7 @@ class Component:
             'get',
             endpoints.COMPONENT.format(self._session.user_id, self.facility_id, self.component_id),
         )
+        self.raw = res
         self.component_id = res.get('componentId')  # This should not be able to change.
         self.display_name = res.get('displayName')
         self.display_category = res.get('displayCategory')
@@ -132,6 +138,8 @@ class Parameter:
     max_val: str | None
     string_list_key_values: dict[str, str] | None
 
+    raw: dict = field(repr=False, default_factory=dict)
+
     @classmethod
     def _from_dict(cls, obj: dict, session: Session, facility_id: int) -> 'Parameter':
         parameter_id = obj['id']
@@ -158,6 +166,7 @@ class Parameter:
             min_val,
             max_val,
             string_list_key_values,
+            obj,
         )
 
     @classmethod

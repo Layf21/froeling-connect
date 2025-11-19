@@ -1,6 +1,6 @@
 """Datamodels related to the user account."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from froeling.datamodels.generics import Address
 
@@ -20,6 +20,7 @@ class UserData:
     active: bool | None
     picture_url: str | None
     facility_count: int | None
+    raw: dict = field(repr=False, default_factory=dict)
 
     @staticmethod
     def _from_dict(obj: dict) -> 'UserData':
@@ -49,4 +50,5 @@ class UserData:
             active,
             picture_url,
             facility_count,
+            obj,
         )

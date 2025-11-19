@@ -35,4 +35,3 @@ jobs:
         run: hatch test -a
       - name: Test build
         run: hatch build
-

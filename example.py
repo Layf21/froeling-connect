@@ -39,6 +39,9 @@ async def main():
         facility = (await client.get_facilities())[0]  # Get a list of all facilities
         print(facility)
 
+        # You can see the raw json data corresponding to a datamodel with the .raw attribute.
+        print(facility.raw)
+
         # Get all components of the facility
         example_component = (await facility.get_components())[0]
         print(example_component)

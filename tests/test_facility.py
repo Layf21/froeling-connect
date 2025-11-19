@@ -20,6 +20,9 @@ async def test_get_facility(load_json):
             assert len(f) == 2
             f1, f2 = f
 
+            assert f1.raw == facility_data[0]  # order should be the same, but I wouldn't call it a requirement
+            assert f2.raw == facility_data[1]
+
             assert f1.facility_id == 12345
             assert f1.equipment_number == 100321123
             assert f1.status == 'OK'
@@ -82,6 +85,9 @@ async def test_get_facility_modified(load_json):
             f = await api.get_facilities()
             assert len(f) == 3
             f1, f2, f3 = f
+            assert f1.raw == facility_data[0]
+            assert f2.raw == facility_data[1]
+            assert f3.raw == facility_data[2]
 
             assert f1.facility_id == 12345
             assert f1.equipment_number is None
@@ -218,6 +224,9 @@ async def test_facility_get_components(load_json, component_id, expected):
 
             comp = next(c for c in components if c.component_id == component_id)
 
+            api_data = next(d for d in component_list_data if d["componentId"] == component_id)
+            assert comp.raw == api_data
+
             for field, value in expected.items():
                 assert getattr(comp, field) == value
                 assert comp.time_windows_view is None
@@ -247,6 +256,12 @@ async def test_facility_get_component(load_json):
 
         async with Froeling(token=token) as api:
             f = await api.get_facility(12345)
+            assert f.raw == facility_data[0]
             c = f.get_component('1_100')
+            assert c.raw == {}
             c2 = api.get_component(12345, '1_100')
-            assert c.component_id == c2.component_id
+            assert c2.raw == {}
+            await c.update()
+            assert c.raw == component_data
+            await c2.update()
+            assert c2.raw == component_data
