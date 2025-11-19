@@ -4,7 +4,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/froeling-connect)](https://pypi.org/project/froeling-connect/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/froeling-connect)
 ![Development Status: Beta](https://img.shields.io/badge/development%20status-beta-orange)
-![Build Status](https://github.com/Layf21/froeling-connect/actions/workflows/ci.yaml/badge.svg)
+![Build Status](https://github.com/Layf21/froeling-connect/actions/workflows/ci.yml/badge.svg)
 [![License](https://img.shields.io/pypi/l/froeling-connect)](https://github.com/Layf21/froeling-connect/blob/main/LICENSE.txt)
 [![CodeFactor](https://www.codefactor.io/repository/github/layf21/froeling-connect/badge/main)](https://www.codefactor.io/repository/github/layf21/froeling-connect/overview/main)
 
