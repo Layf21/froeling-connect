@@ -1,6 +1,6 @@
 """Generic datamodels used in multiple places/endpoints."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 
@@ -20,6 +20,7 @@ class Address:
     zip: int | None
     city: str | None
     country: str | None
+    raw: dict = field(repr=False, default_factory=dict)
 
     @staticmethod
     def _from_dict(obj: dict) -> 'Address':
@@ -27,7 +28,7 @@ class Address:
         zipcode = obj.get('zip')
         city = obj.get('city')
         country = obj.get('country')
-        return Address(street, zipcode, city, country)
+        return Address(street, zipcode, city, country, obj)
 
 
 class Weekday(Enum):
@@ -56,6 +57,7 @@ class TimeWindowDay:
     id: int
     weekday: Weekday
     phases: list['TimeWindowPhase']
+    raw: dict = field(repr=False, default_factory=dict)
 
     @classmethod
     def _from_dict(cls, obj: dict) -> 'TimeWindowDay':
@@ -63,7 +65,7 @@ class TimeWindowDay:
         weekday = Weekday(obj['weekDay'])
         phases = TimeWindowPhase._from_list(obj['phases'])  # noqa: SLF001
 
-        return cls(_id, weekday, phases)
+        return cls(_id, weekday, phases, obj)
 
     @classmethod
     def _from_list(cls, obj: list) -> list['TimeWindowDay']:
@@ -86,6 +88,7 @@ class TimeWindowPhase:
     start_minute: int
     end_hour: int
     end_minute: int
+    raw: dict = field(repr=False, default_factory=dict)
 
     @classmethod
     def _from_dict(cls, obj: dict) -> 'TimeWindowPhase':
@@ -94,7 +97,7 @@ class TimeWindowPhase:
         eh = obj['endHour']
         em = obj['endMinute']
 
-        return cls(sh, sm, eh, em)
+        return cls(sh, sm, eh, em, obj)
 
     @classmethod
     def _from_list(cls, obj: list) -> list['TimeWindowPhase']:

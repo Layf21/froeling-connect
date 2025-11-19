@@ -46,6 +46,8 @@ async def test_get_notifications(load_json):
             notifications = await api.get_notifications()
             assert len(notifications) == 3
             for i, n in enumerate(notifications):
+                assert n.raw == notification_list_data[i]
+
                 assert n.id == (i + 1) * 10000000 + 123456
                 assert n.subject == f'Subject {i + 1}'
                 assert n.unread == (False, True, None)[i]
@@ -93,6 +95,7 @@ async def test_get_notification_info(load_json):
             assert notification_details == notification_details_2
 
             d = notification_details
+            assert d.raw == notification_data
             assert d.id == 10123456
             assert d.subject == 'Subject 1'
             assert d.body == 'Title\r\ntext'
@@ -108,6 +111,7 @@ async def test_get_notification_info(load_json):
             s1, s2 = d.notification_submission_state_dto
 
             assert isinstance(s1, NotificationSubmissionState)
+            assert s1.raw == notification_data["notificationSubmissionStateDto"][0]
             assert s1.id == 12345678
             assert s1.recipient == 'joe@example.com'
             assert s1.type == 'EMAIL'
@@ -115,6 +119,7 @@ async def test_get_notification_info(load_json):
             assert s1.submission_result == 'SUCCESS'
 
             assert isinstance(s2, NotificationSubmissionState)
+            assert s2.raw == notification_data["notificationSubmissionStateDto"][1]
             assert s2.id == 12345679
             assert s2.recipient == 'sometoken'
             assert s2.type == 'TOKEN'

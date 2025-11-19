@@ -23,9 +23,10 @@ async def test_facility_get_components(load_json):
 
         async with Froeling(token=token) as api:
             f = await api.get_facility(12345)
-            c = await f.get_components()
-            assert len(c) == 5
-            c = c[0]
+            components = await f.get_components()
+            assert len(components) == 5
+            c = components[0]
+            assert c.raw == component_list_data[0]
 
             assert c.component_id == '1_100'
             assert c.display_name == 'some display name'
@@ -50,7 +51,9 @@ async def test_component_update(load_json):
 
         async with Froeling(token=token) as api:
             c = api.get_component(12345, '1_100')
+            assert c.raw == {}
             await c.update()
+            assert c.raw == component_data
             for p in c.parameters.values():
                 p.display_value
             # TODO: Add asserts

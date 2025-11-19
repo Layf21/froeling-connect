@@ -1,7 +1,7 @@
 """Datamodels to represent Notifications and related objects."""
 
 import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -22,6 +22,7 @@ class NotificationOverview:
     """Known Values: "ERROR", "INFO", "WARNING", "ALARM" """
     facility_id: int | None
     facility_name: str | None
+    raw: dict
 
     details: 'NotificationDetails'
 
@@ -31,7 +32,7 @@ class NotificationOverview:
         self._set_data(data)
 
     def _set_data(self, data: dict) -> None:
-        self.data = data
+        self.raw = data
 
         self.id = data.get('id')
         self.subject = data.get('subject')
@@ -90,6 +91,7 @@ class NotificationSubmissionState:
     type: str | None
     submitted_to: str | None
     submission_result: str | None
+    raw: dict = field(repr=False, default_factory=dict)
 
     @classmethod
     def _from_dict(cls, obj: dict) -> 'NotificationSubmissionState':
@@ -106,6 +108,7 @@ class NotificationSubmissionState:
             notification_type,
             submitted_to,
             submission_result,
+            obj,
         )
 
     @classmethod

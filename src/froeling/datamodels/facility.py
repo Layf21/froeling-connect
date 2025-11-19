@@ -1,6 +1,6 @@
 """Dataclasses relating to Facilities."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from froeling import endpoints
 from froeling.datamodels.component import Component
@@ -28,6 +28,7 @@ class Facility:
     hours_since_last_maintenance: int | None
     operation_hours: int | None
     facility_generation: str | None
+    raw: dict = field(repr=False, default_factory=dict)
 
     @staticmethod
     def _from_dict(obj: dict, session: Session) -> 'Facility':
@@ -84,6 +85,7 @@ class Facility:
             hours_since_last_maintenance,
             operation_hours,
             facility_generation,
+            obj,
         )
 
     @staticmethod
