@@ -77,8 +77,8 @@ asyncio.run(main())
 ## Contributing
 
 1. Fork the repository
-2. Create a new branch under feature/*
-3. Submit a pull request into dev with your improvements
+2. Create a feature branch feature/[your-feature], branching off from main
+3. Submit a pull request to main with your improvements
 
 This project uses [Hatch](https://hatch.pypa.io/).
 
