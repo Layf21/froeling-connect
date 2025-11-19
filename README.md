@@ -1,7 +1,6 @@
 # froeling-connect
 
 [![PyPI Version](https://img.shields.io/pypi/v/froeling-connect)](https://pypi.org/project/froeling-connect/)
-[![PyPI Version](https://img.shields.io/pypi/v/froeling-connect)](https://pypi.org/project/froeling-connect/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/froeling-connect)
 ![Development Status: Beta](https://img.shields.io/badge/development%20status-beta-orange)
 ![Build Status](https://github.com/Layf21/froeling-connect/actions/workflows/ci.yml/badge.svg)
