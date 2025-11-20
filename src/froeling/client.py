@@ -137,9 +137,11 @@ class Froeling:
 
     async def get_notification_count(self) -> int:
         """Fetch the unread notification count."""
-        return (await self.session.request('get', endpoints.NOTIFICATION_COUNT.format(self.session.user_id)))[
-            'unreadNotifications'
-        ]
+        return int(
+            (await self.session.request('get', endpoints.NOTIFICATION_COUNT.format(self.session.user_id)))[
+                'unreadNotifications'
+            ]
+        )
 
     async def get_notifications(self) -> list[datamodels.NotificationOverview]:
         """Fetch an overview of all notifications."""

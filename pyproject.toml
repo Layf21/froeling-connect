@@ -78,8 +78,9 @@ include = ["src/**/*.py"]
 [tool.ruff.format]
 quote-style = "single"
 
-[tool.ruff.lint.pydocstyle]
-convention = "google"
+[tool.ruff.lint]
+extend-ignore = ["TRY003", "EM101"]
+pydocstyle.convention = "google"
 
 [tool.mypy]
 python_version = "3.10"

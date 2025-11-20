@@ -229,7 +229,7 @@ async def test_facility_get_components(load_json, component_id, expected):
 
             for field, value in expected.items():
                 assert getattr(comp, field) == value
-                assert comp.time_windows_view is None
+                assert comp.time_windows is None
                 assert comp.picture_url is None
                 assert comp.parameters == {}
 

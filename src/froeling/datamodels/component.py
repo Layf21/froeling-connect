@@ -5,7 +5,7 @@ from http import HTTPStatus
 from typing import Any
 
 from froeling import endpoints
-from froeling.datamodels.generics import TimeWindowDay
+from froeling.datamodels.timewindow import TimeWindowDay, TimeWindows
 from froeling.exceptions import NetworkError
 from froeling.session import Session
 
@@ -31,10 +31,11 @@ class Component:
         standard_name (str | None): Standardized name, if available.
         type (str | None): Component type.
         sub_type (str | None): More specific component subtype.
-        time_windows_view (list[TimeWindowDay] | None): Time window data, if fetched.
+        time_windows (TimeWindows | None): Time window data, if fetched.
         picture_url (str | None): URL to a representative image of the component.
         parameters (list[Parameter]): List of associated parameters.
-        raw (dict)
+        time_windows_view (list[TimeWindowDay] | None): Compatibility shim for time_windows.
+        raw (dict): Raw data as received from the API.
 
     """
 
@@ -45,7 +46,7 @@ class Component:
     standard_name: str | None
     type: str | None
     sub_type: str | None
-    time_windows_view: list[TimeWindowDay] | None
+    time_windows: TimeWindows | None
     picture_url: str | None
 
     parameters: dict[str, 'Parameter']
@@ -58,7 +59,7 @@ class Component:
         self.component_id = component_id
         self._session = session
 
-        self.time_windows_view = None
+        self.time_windows = None
         self.picture_url = None
         self.parameters = {}
         self.raw = {}
@@ -97,7 +98,7 @@ class Component:
         self.type = res.get('type')
         self.sub_type = res.get('subType')
         if res.get('timeWindowsView'):
-            self.time_windows_view = TimeWindowDay._from_list(res['timeWindowsView'])  # noqa: SLF001
+            self.time_windows = TimeWindows._from_list(res['timeWindowsView'])  # noqa: SLF001
 
         #  TODO: Find endpoint that gives all parameters
         topview = res.get('topView')
@@ -118,6 +119,11 @@ class Component:
 
         self.parameters = Parameter._from_list(list(parameters.values()), self._session, self.facility_id)  # noqa: SLF001
         return self.parameters
+
+    @property
+    def time_windows_view(self) -> list[TimeWindowDay] | None:
+        """Compatibility shim: old name for time_windows."""
+        return self.time_windows.values() if self.time_windows else None
 
 
 @dataclass

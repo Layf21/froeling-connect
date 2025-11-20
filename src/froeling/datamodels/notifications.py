@@ -78,7 +78,7 @@ class NotificationDetails(NotificationOverview):
         if 'errorSolutions' in obj:
             error_solutions = NotificationErrorSolution._from_list(obj['errorSolutions'])  # noqa: SLF001
         notification_details_object = cls(body, sms, mail, push, submission_state, error_solutions)
-        notification_details_object._set_data(obj)  # noqa: SLF001
+        notification_details_object._set_data(obj)
         return notification_details_object
 
 

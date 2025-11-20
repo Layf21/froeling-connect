@@ -1,10 +1,13 @@
 """Dataclasses relating to Facilities."""
 
 from dataclasses import dataclass, field
+from http import HTTPStatus
 
 from froeling import endpoints
 from froeling.datamodels.component import Component
 from froeling.datamodels.generics import Address
+from froeling.datamodels.timewindow import TimeWindows
+from froeling.exceptions import NetworkError
 from froeling.session import Session
 
 
@@ -106,3 +109,21 @@ class Facility:
         Data will not be initialized, call the Component.update method to fetch them.
         """
         return Component(self.facility_id, component_id, self.session)
+
+    async def update_time_windows(self, new_time_window: TimeWindows) -> dict | None:
+        """Update this Facility's time windows.
+
+        Returns the raw response from the API, None if there were no changes. Example:
+        ```
+        {'updatedTimeWindowIds': [56]}
+        ```"""
+        try:
+            return await self.session.request(
+                'post',
+                endpoints.SET_FACILITY_TIME_WINDOWS.format(self.session.user_id, self.facility_id),
+                json=new_time_window.to_list(),
+            )
+        except NetworkError as e:
+            if e.status == HTTPStatus.NOT_MODIFIED:
+                return None
+            raise

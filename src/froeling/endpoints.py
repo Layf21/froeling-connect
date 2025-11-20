@@ -30,3 +30,6 @@ NOTIFICATION = 'https://connect-api.froeling.com/connect/v1.0/resources/service/
 
 SET_PARAMETER = 'https://connect-api.froeling.com/fcs/v1.0/resources/user/{}/facility/{}/parameter/{}'
 """1: user_id  2: facility_id  3: parameter_id"""
+
+SET_FACILITY_TIME_WINDOWS = 'https://connect-api.froeling.com/fcs/v1.0/resources/user/{}/facility/{}/timeWindows'
+"""1: user_id  2: facility_id"""
